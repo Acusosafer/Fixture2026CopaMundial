@@ -1,0 +1,24 @@
+{
+  "name": "Mundial 2026",
+  "short_name": "Mundial 26",
+  "description": "Seguí el Mundial FIFA 2026 en tiempo real. Fixture, grupos, resultados y más.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0E1A",
+  "theme_color": "#0A0E1A",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "es",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Fixture", "url": "/fixture", "description": "Ver todos los partidos", "icons": [{ "src": "/icon.svg", "sizes": "any" }] },
+    { "name": "Grupos", "url": "/grupos", "description": "Tablas de grupos", "icons": [{ "src": "/icon.svg", "sizes": "any" }] },
+    { "name": "Bracket", "url": "/bracket", "description": "Eliminatorias", "icons": [{ "src": "/icon.svg", "sizes": "any" }] }
+  ],
+  "categories": ["sports", "news"],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

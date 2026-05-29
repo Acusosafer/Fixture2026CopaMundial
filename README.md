@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mundial 2026 — PWA
 
-## Getting Started
+App progresiva (PWA) para seguir el Mundial FIFA 2026 en tiempo real.
 
-First, run the development server:
+## Stack
+
+- **Next.js 15** (App Router, Turbopack)
+- **TypeScript** strict
+- **Tailwind CSS v4** + CSS variables (tema oscuro/claro)
+- **TanStack Query v5** para fetching con caché adaptativo
+- **Framer Motion** para animaciones
+- **Zustand** (persistido en localStorage)
+- **next/font** — Bebas Neue + Inter
+
+## Funcionalidades
+
+| Sección | Estado |
+|---------|--------|
+| Home — próximo partido + cuenta regresiva | ✅ |
+| Fixture completo (96 partidos) | ✅ |
+| Grupos (12 grupos, scroll por chip) | ✅ |
+| Noticias (RSS Olé / TyC / ESPN + Twitter) | ✅ |
+| Sedes (16 estadios con fotos) | ✅ |
+| Histórico (mundiales 1930–2022) | ✅ |
+| Mi Selección (cualquier equipo como favorito) | ✅ |
+| Detalle de partido con marcador en vivo | ✅ |
+| Events timeline / lineups / estadísticas | ✅ |
+| Head-to-head (H2H) | ✅ |
+| Splash screen (animación al abrir) | ✅ |
+| Tema oscuro / claro (toggle) | ✅ |
+| PWA (manifest + service worker) | ✅ |
+| Bracket de eliminación directa | 🔧 datos estáticos |
+| Push notifications | ⏳ pendiente |
+
+## Dev
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm dev          # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Variables de entorno
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+MOCK_LIVE=true                    # scores en vivo simulados (para testing)
+FOOTBALL_DATA_API_KEY=...         # football-data.org v4 (free tier)
+RAPIDAPI_KEY=...                  # clima / weather
+TWITTER_BEARER_TOKEN=...          # tweets @gastonedul (noticias)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## API Routes
 
-## Learn More
+| Route | Descripción |
+|-------|-------------|
+| `/api/live` | Live scores (polling cada 60s) |
+| `/api/match-detail/[id]` | Detalle, eventos y alineaciones |
+| `/api/h2h/[id]` | Head-to-head histórico |
+| `/api/news` | Noticias (RSS + Twitter) |
+| `/api/weather` | Clima del usuario |
 
-To learn more about Next.js, take a look at the following resources:
+## Notas
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Con `MOCK_LIVE=true`, los partidos 1–3 retornan scores falsos para testing sin esperar el Mundial.
+- El tema se persiste en `localStorage` vía Zustand.
+- Los emojis de banderas usan `flagcdn.com` (imágenes) para evitar problemas de fuentes en distintos OS.

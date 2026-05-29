@@ -1,0 +1,892 @@
+{
+  "torneo": "FIFA Copa del Mundo 2026",
+  "descripcion": "Historial de enfrentamientos en Copas del Mundo (1930-2022) para los 72 partidos de la fase de grupos",
+  "aclaracion": "Solo se listan partidos disputados en Copas del Mundo FIFA. Encuentros en otras competencias se indican en 'otras_competencias_leyenda'.",
+  "generado": "2026-05-29",
+  "grupos": [
+    {
+      "grupo": "A",
+      "equipos": ["México", "Corea del Sur", "Sudáfrica", "Chequia"],
+      "partidos": [
+        {
+          "id": 1,
+          "equipo1": "México",
+          "equipo2": "Corea del Sur",
+          "historial_copa_mundo": [
+            {
+              "año": 1998,
+              "sede": "Francia",
+              "fase": "Fase de grupos (Grupo E)",
+              "resultado": "3-1",
+              "ganador": "México"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "México": 1, "empates": 0, "Corea del Sur": 0 },
+          "otras_competencias_leyenda": "Se han disputado encuentros en el Torneo de Oro CONCACAF/AFC y en amistosos internacionales."
+        },
+        {
+          "id": 2,
+          "equipo1": "México",
+          "equipo2": "Sudáfrica",
+          "historial_copa_mundo": [
+            {
+              "año": 2010,
+              "sede": "Sudáfrica",
+              "fase": "Fase de grupos (Grupo A) — Partido inaugural del torneo",
+              "resultado": "1-1",
+              "ganador": "Empate"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "México": 0, "empates": 1, "Sudáfrica": 0 },
+          "otras_competencias_leyenda": "El partido del Mundial 2010 fue el único encuentro oficial entre ambas selecciones. El gol de Siphiwe Tshabalala en ese partido inaugural es uno de los más recordados de la historia del torneo."
+        },
+        {
+          "id": 3,
+          "equipo1": "México",
+          "equipo2": "Chequia",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "México": 0, "empates": 0, "Chequia": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Se han enfrentado en amistosos internacionales."
+        },
+        {
+          "id": 4,
+          "equipo1": "Corea del Sur",
+          "equipo2": "Sudáfrica",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Corea del Sur": 0, "empates": 0, "Sudáfrica": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        },
+        {
+          "id": 5,
+          "equipo1": "Corea del Sur",
+          "equipo2": "Chequia",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Corea del Sur": 0, "empates": 0, "Chequia": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Se han enfrentado en amistosos internacionales."
+        },
+        {
+          "id": 6,
+          "equipo1": "Sudáfrica",
+          "equipo2": "Chequia",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Sudáfrica": 0, "empates": 0, "Chequia": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        }
+      ]
+    },
+    {
+      "grupo": "B",
+      "equipos": ["Canadá", "Suiza", "Qatar", "Bosnia-Herzegovina"],
+      "partidos": [
+        {
+          "id": 7,
+          "equipo1": "Canadá",
+          "equipo2": "Suiza",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Canadá": 0, "empates": 0, "Suiza": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Canadá estuvo en 1986 y 2022; Suiza en múltiples ediciones, pero nunca coincidieron en grupos ni en fase eliminatoria."
+        },
+        {
+          "id": 8,
+          "equipo1": "Canadá",
+          "equipo2": "Qatar",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Canadá": 0, "empates": 0, "Qatar": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        },
+        {
+          "id": 9,
+          "equipo1": "Canadá",
+          "equipo2": "Bosnia-Herzegovina",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Canadá": 0, "empates": 0, "Bosnia-Herzegovina": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Bosnia debutó en 2014, Canadá regresó en 2022; nunca coincidieron en un mismo torneo."
+        },
+        {
+          "id": 10,
+          "equipo1": "Suiza",
+          "equipo2": "Qatar",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Suiza": 0, "empates": 0, "Qatar": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        },
+        {
+          "id": 11,
+          "equipo1": "Suiza",
+          "equipo2": "Bosnia-Herzegovina",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Suiza": 0, "empates": 0, "Bosnia-Herzegovina": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Se han enfrentado en la Liga de Naciones UEFA y en clasificatorios europeos."
+        },
+        {
+          "id": 12,
+          "equipo1": "Qatar",
+          "equipo2": "Bosnia-Herzegovina",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Qatar": 0, "empates": 0, "Bosnia-Herzegovina": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        }
+      ]
+    },
+    {
+      "grupo": "C",
+      "equipos": ["Brasil", "Marruecos", "Escocia", "Haití"],
+      "partidos": [
+        {
+          "id": 13,
+          "equipo1": "Brasil",
+          "equipo2": "Marruecos",
+          "historial_copa_mundo": [
+            {
+              "año": 1998,
+              "sede": "Francia",
+              "fase": "Fase de grupos (Grupo A)",
+              "resultado": "3-0",
+              "ganador": "Brasil"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "Brasil": 1, "empates": 0, "Marruecos": 0 },
+          "otras_competencias_leyenda": "Dato histórico: el Grupo A de Francia 1998 reunió a Brasil, Noruega, Marruecos y Escocia. En 2026, tres de esos cuatro equipos vuelven a coincidir en el mismo grupo (Grupo C). Se han enfrentado también en amistosos internacionales."
+        },
+        {
+          "id": 14,
+          "equipo1": "Brasil",
+          "equipo2": "Escocia",
+          "historial_copa_mundo": [
+            {
+              "año": 1974,
+              "sede": "Alemania Occidental",
+              "fase": "Fase de grupos (Grupo 2)",
+              "resultado": "0-0",
+              "ganador": "Empate"
+            },
+            {
+              "año": 1982,
+              "sede": "España",
+              "fase": "Fase de grupos (Grupo 6)",
+              "resultado": "4-1",
+              "ganador": "Brasil"
+            },
+            {
+              "año": 1990,
+              "sede": "Italia",
+              "fase": "Fase de grupos (Grupo C)",
+              "resultado": "1-0",
+              "ganador": "Brasil"
+            },
+            {
+              "año": 1998,
+              "sede": "Francia",
+              "fase": "Fase de grupos (Grupo A)",
+              "resultado": "2-1",
+              "ganador": "Brasil"
+            }
+          ],
+          "total_partidos_mundiales": 4,
+          "balance_mundiales": { "Brasil": 3, "empates": 1, "Escocia": 0 },
+          "otras_competencias_leyenda": "Una de las rivalidades mundialistas más frecuentes: 4 enfrentamientos en Copa del Mundo con 3 victorias brasileñas. Brasil nunca perdió contra Escocia en un Mundial. Se han enfrentado también en numerosos amistosos internacionales."
+        },
+        {
+          "id": 15,
+          "equipo1": "Brasil",
+          "equipo2": "Haití",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Brasil": 0, "empates": 0, "Haití": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Haití solo ha participado en 1974 (Grupo 4), mientras Brasil estuvo en el Grupo 2 de ese torneo. Se han enfrentado en la Copa América y Copa Oro de CONCACAF."
+        },
+        {
+          "id": 16,
+          "equipo1": "Marruecos",
+          "equipo2": "Escocia",
+          "historial_copa_mundo": [
+            {
+              "año": 1998,
+              "sede": "Francia",
+              "fase": "Fase de grupos (Grupo A)",
+              "resultado": "3-0",
+              "ganador": "Marruecos"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "Marruecos": 1, "empates": 0, "Escocia": 0 },
+          "otras_competencias_leyenda": "El triunfo 3-0 de Marruecos en 1998 significó la eliminación de Escocia del torneo. Es el único antecedente mundialista entre ambos."
+        },
+        {
+          "id": 17,
+          "equipo1": "Marruecos",
+          "equipo2": "Haití",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Marruecos": 0, "empates": 0, "Haití": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Marruecos (1970, 1986, 1994, 1998, 2022) y Haití (1974) nunca coincidieron en el mismo torneo."
+        },
+        {
+          "id": 18,
+          "equipo1": "Escocia",
+          "equipo2": "Haití",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Escocia": 0, "empates": 0, "Haití": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. En 1974, Escocia estuvo en el Grupo 2 y Haití en el Grupo 4."
+        }
+      ]
+    },
+    {
+      "grupo": "D",
+      "equipos": ["Estados Unidos", "Paraguay", "Australia", "Turquía"],
+      "partidos": [
+        {
+          "id": 19,
+          "equipo1": "Estados Unidos",
+          "equipo2": "Paraguay",
+          "historial_copa_mundo": [
+            {
+              "año": 1930,
+              "sede": "Uruguay",
+              "fase": "Fase de grupos (Grupo 4)",
+              "resultado": "3-0",
+              "ganador": "Estados Unidos"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "Estados Unidos": 1, "empates": 0, "Paraguay": 0 },
+          "otras_competencias_leyenda": "El único antecedente mundialista data de la primera Copa del Mundo de la historia (1930). Se han enfrentado en Copa América y en amistosos internacionales."
+        },
+        {
+          "id": 20,
+          "equipo1": "Estados Unidos",
+          "equipo2": "Australia",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Estados Unidos": 0, "empates": 0, "Australia": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Se han enfrentado en amistosos y en la Copa de Oro de CONCACAF."
+        },
+        {
+          "id": 21,
+          "equipo1": "Estados Unidos",
+          "equipo2": "Turquía",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Estados Unidos": 0, "empates": 0, "Turquía": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Turquía participó en 1954 y 2002; EE.UU. no cruzó con Turquía en ninguna de esas ediciones. Se han enfrentado en amistosos internacionales."
+        },
+        {
+          "id": 22,
+          "equipo1": "Paraguay",
+          "equipo2": "Australia",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Paraguay": 0, "empates": 0, "Australia": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        },
+        {
+          "id": 23,
+          "equipo1": "Paraguay",
+          "equipo2": "Turquía",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Paraguay": 0, "empates": 0, "Turquía": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        },
+        {
+          "id": 24,
+          "equipo1": "Australia",
+          "equipo2": "Turquía",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Australia": 0, "empates": 0, "Turquía": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Australia participó en 1974, 2006, 2010, 2014 y 2022; Turquía en 1954 y 2002, sin coincidencias en ninguna edición."
+        }
+      ]
+    },
+    {
+      "grupo": "E",
+      "equipos": ["Alemania", "Ecuador", "Costa de Marfil", "Curazao"],
+      "partidos": [
+        {
+          "id": 25,
+          "equipo1": "Alemania",
+          "equipo2": "Ecuador",
+          "historial_copa_mundo": [
+            {
+              "año": 2006,
+              "sede": "Alemania",
+              "fase": "Fase de grupos (Grupo A)",
+              "resultado": "3-0",
+              "ganador": "Alemania"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "Alemania": 1, "empates": 0, "Ecuador": 0 },
+          "otras_competencias_leyenda": "Único encuentro mundialista, disputado en suelo alemán. Ecuador también participó en la Copa Confederaciones 2001 sin cruzarse con Alemania. Amistosos ocasionales."
+        },
+        {
+          "id": 26,
+          "equipo1": "Alemania",
+          "equipo2": "Costa de Marfil",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Alemania": 0, "empates": 0, "Costa de Marfil": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Se enfrentaron en la Copa Confederaciones 2017 (Alemania 2-0 Costa de Marfil, fase de grupos) y en amistosos internacionales."
+        },
+        {
+          "id": 27,
+          "equipo1": "Alemania",
+          "equipo2": "Curazao",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Alemania": 0, "empates": 0, "Curazao": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Curazao hace su debut mundialista en 2026."
+        },
+        {
+          "id": 28,
+          "equipo1": "Ecuador",
+          "equipo2": "Costa de Marfil",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Ecuador": 0, "empates": 0, "Costa de Marfil": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        },
+        {
+          "id": 29,
+          "equipo1": "Ecuador",
+          "equipo2": "Curazao",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Ecuador": 0, "empates": 0, "Curazao": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Curazao hace su debut mundialista en 2026."
+        },
+        {
+          "id": 30,
+          "equipo1": "Costa de Marfil",
+          "equipo2": "Curazao",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Costa de Marfil": 0, "empates": 0, "Curazao": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Curazao hace su debut mundialista en 2026."
+        }
+      ]
+    },
+    {
+      "grupo": "F",
+      "equipos": ["Países Bajos", "Japón", "Túnez", "Suecia"],
+      "partidos": [
+        {
+          "id": 31,
+          "equipo1": "Países Bajos",
+          "equipo2": "Japón",
+          "historial_copa_mundo": [
+            {
+              "año": 2010,
+              "sede": "Sudáfrica",
+              "fase": "Fase de grupos (Grupo E)",
+              "resultado": "1-0",
+              "ganador": "Países Bajos"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "Países Bajos": 1, "empates": 0, "Japón": 0 },
+          "otras_competencias_leyenda": "Único antecedente mundialista. Se han enfrentado en amistosos y en la Copa Confederaciones."
+        },
+        {
+          "id": 32,
+          "equipo1": "Países Bajos",
+          "equipo2": "Túnez",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Países Bajos": 0, "empates": 0, "Túnez": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Se han enfrentado en amistosos internacionales."
+        },
+        {
+          "id": 33,
+          "equipo1": "Países Bajos",
+          "equipo2": "Suecia",
+          "historial_copa_mundo": [
+            {
+              "año": 1974,
+              "sede": "Alemania Occidental",
+              "fase": "Fase de grupos (Grupo 3)",
+              "resultado": "0-0",
+              "ganador": "Empate"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "Países Bajos": 0, "empates": 1, "Suecia": 0 },
+          "otras_competencias_leyenda": "Se han enfrentado en múltiples ediciones de la Eurocopa (1992, 2000, 2004) y en eliminatorias europeas. Clásico duelo del fútbol continental."
+        },
+        {
+          "id": 34,
+          "equipo1": "Japón",
+          "equipo2": "Túnez",
+          "historial_copa_mundo": [
+            {
+              "año": 2002,
+              "sede": "Corea del Sur / Japón",
+              "fase": "Fase de grupos (Grupo H)",
+              "resultado": "2-0",
+              "ganador": "Japón"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "Japón": 1, "empates": 0, "Túnez": 0 },
+          "otras_competencias_leyenda": "Único antecedente mundialista. Japón era co-anfitrión en 2002, lo que otorgó especial relevancia a este encuentro."
+        },
+        {
+          "id": 35,
+          "equipo1": "Japón",
+          "equipo2": "Suecia",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Japón": 0, "empates": 0, "Suecia": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Se han enfrentado en amistosos internacionales."
+        },
+        {
+          "id": 36,
+          "equipo1": "Túnez",
+          "equipo2": "Suecia",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Túnez": 0, "empates": 0, "Suecia": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        }
+      ]
+    },
+    {
+      "grupo": "G",
+      "equipos": ["Bélgica", "Irán", "Egipto", "Nueva Zelanda"],
+      "partidos": [
+        {
+          "id": 37,
+          "equipo1": "Bélgica",
+          "equipo2": "Irán",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Bélgica": 0, "empates": 0, "Irán": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Irán participó en 1978 y 2006 en ediciones donde Bélgica estuvo ausente, y en 1998, 2014, 2018 y 2022 sin coincidir con Bélgica en grupos ni eliminatorias."
+        },
+        {
+          "id": 38,
+          "equipo1": "Bélgica",
+          "equipo2": "Egipto",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Bélgica": 0, "empates": 0, "Egipto": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Egipto solo participó en 1934 y 1990. En 1934 ambos cayeron en primera ronda en distintas llaves; en 1990 estuvieron en grupos diferentes."
+        },
+        {
+          "id": 39,
+          "equipo1": "Bélgica",
+          "equipo2": "Nueva Zelanda",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Bélgica": 0, "empates": 0, "Nueva Zelanda": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Nueva Zelanda participó en 1982 (grupos diferentes a Bélgica) y 2010 (Bélgica ausente)."
+        },
+        {
+          "id": 40,
+          "equipo1": "Irán",
+          "equipo2": "Egipto",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Irán": 0, "empates": 0, "Egipto": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Irán (1978, 1998, 2006, 2014, 2018, 2022) y Egipto (1934, 1990) nunca coincidieron en un mismo torneo."
+        },
+        {
+          "id": 41,
+          "equipo1": "Irán",
+          "equipo2": "Nueva Zelanda",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Irán": 0, "empates": 0, "Nueva Zelanda": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        },
+        {
+          "id": 42,
+          "equipo1": "Egipto",
+          "equipo2": "Nueva Zelanda",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Egipto": 0, "empates": 0, "Nueva Zelanda": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        }
+      ]
+    },
+    {
+      "grupo": "H",
+      "equipos": ["España", "Uruguay", "Arabia Saudita", "Cabo Verde"],
+      "partidos": [
+        {
+          "id": 43,
+          "equipo1": "España",
+          "equipo2": "Uruguay",
+          "historial_copa_mundo": [
+            {
+              "año": 1950,
+              "sede": "Brasil",
+              "fase": "Ronda Final (Round-robin por el título)",
+              "resultado": "2-2",
+              "ganador": "Empate"
+            },
+            {
+              "año": 1990,
+              "sede": "Italia",
+              "fase": "Fase de grupos (Grupo E)",
+              "resultado": "2-1",
+              "ganador": "España"
+            }
+          ],
+          "total_partidos_mundiales": 2,
+          "balance_mundiales": { "España": 1, "empates": 1, "Uruguay": 0 },
+          "otras_competencias_leyenda": "Se enfrentaron en la Copa Confederaciones 2013 (fase de grupos, España 2-1 Uruguay) y en numerosos amistosos. El empate de 1950 se produjo en la icónica Ronda Final en la que Uruguay terminó campeón del mundo."
+        },
+        {
+          "id": 44,
+          "equipo1": "España",
+          "equipo2": "Arabia Saudita",
+          "historial_copa_mundo": [
+            {
+              "año": 2006,
+              "sede": "Alemania",
+              "fase": "Fase de grupos (Grupo H)",
+              "resultado": "1-0",
+              "ganador": "España"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "España": 1, "empates": 0, "Arabia Saudita": 0 },
+          "otras_competencias_leyenda": "Único antecedente mundialista. Se han enfrentado en amistosos internacionales."
+        },
+        {
+          "id": 45,
+          "equipo1": "España",
+          "equipo2": "Cabo Verde",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "España": 0, "empates": 0, "Cabo Verde": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Cabo Verde hace su debut mundialista en 2026."
+        },
+        {
+          "id": 46,
+          "equipo1": "Uruguay",
+          "equipo2": "Arabia Saudita",
+          "historial_copa_mundo": [
+            {
+              "año": 2018,
+              "sede": "Rusia",
+              "fase": "Fase de grupos (Grupo A)",
+              "resultado": "1-0",
+              "ganador": "Uruguay"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "Uruguay": 1, "empates": 0, "Arabia Saudita": 0 },
+          "otras_competencias_leyenda": "Único antecedente mundialista. Gol de Luis Suárez en el encuentro de 2018."
+        },
+        {
+          "id": 47,
+          "equipo1": "Uruguay",
+          "equipo2": "Cabo Verde",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Uruguay": 0, "empates": 0, "Cabo Verde": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Cabo Verde hace su debut mundialista en 2026."
+        },
+        {
+          "id": 48,
+          "equipo1": "Arabia Saudita",
+          "equipo2": "Cabo Verde",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Arabia Saudita": 0, "empates": 0, "Cabo Verde": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Cabo Verde hace su debut mundialista en 2026."
+        }
+      ]
+    },
+    {
+      "grupo": "I",
+      "equipos": ["Francia", "Senegal", "Noruega", "Irak"],
+      "partidos": [
+        {
+          "id": 49,
+          "equipo1": "Francia",
+          "equipo2": "Senegal",
+          "historial_copa_mundo": [
+            {
+              "año": 2002,
+              "sede": "Corea del Sur / Japón",
+              "fase": "Fase de grupos (Grupo A) — Partido inaugural del torneo",
+              "resultado": "1-0",
+              "ganador": "Senegal"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "Francia": 0, "empates": 0, "Senegal": 1 },
+          "otras_competencias_leyenda": "Una de las mayores sorpresas en la historia de los Mundiales: Senegal derrotó al campeón vigente Francia en el partido inaugural de 2002. El gol de Papa Bouba Diop es uno de los más recordados. Se han enfrentado también en amistosos internacionales."
+        },
+        {
+          "id": 50,
+          "equipo1": "Francia",
+          "equipo2": "Noruega",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Francia": 0, "empates": 0, "Noruega": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Noruega participó en 1938, 1994 y 1998 sin coincidir con Francia en grupos ni en eliminatorias (en 1998 estuvieron en grupos distintos). Se han enfrentado en clasificatorios europeos y amistosos."
+        },
+        {
+          "id": 51,
+          "equipo1": "Francia",
+          "equipo2": "Irak",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Francia": 0, "empates": 0, "Irak": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Irak solo participó en el Mundial de 1986 (Grupo B), mientras Francia estuvo en el Grupo C de ese mismo torneo, sin cruzarse."
+        },
+        {
+          "id": 52,
+          "equipo1": "Senegal",
+          "equipo2": "Noruega",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Senegal": 0, "empates": 0, "Noruega": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        },
+        {
+          "id": 53,
+          "equipo1": "Senegal",
+          "equipo2": "Irak",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Senegal": 0, "empates": 0, "Irak": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        },
+        {
+          "id": 54,
+          "equipo1": "Noruega",
+          "equipo2": "Irak",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Noruega": 0, "empates": 0, "Irak": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Irak jugó su único Mundial en 1986; Noruega participó en 1994 y 1998, sin coincidencia."
+        }
+      ]
+    },
+    {
+      "grupo": "J",
+      "equipos": ["Argentina", "Austria", "Argelia", "Jordania"],
+      "partidos": [
+        {
+          "id": 55,
+          "equipo1": "Argentina",
+          "equipo2": "Austria",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Argentina": 0, "empates": 0, "Austria": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. A pesar de que ambos participaron en las mismas ediciones (1934, 1978, 1982, 1990, 1998), nunca se cruzaron en grupos ni en fase eliminatoria. Se han enfrentado en amistosos internacionales."
+        },
+        {
+          "id": 56,
+          "equipo1": "Argentina",
+          "equipo2": "Argelia",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Argentina": 0, "empates": 0, "Argelia": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Coincidieron en 1982 y 1986 sin cruzarse. Se han enfrentado en amistosos internacionales, incluyendo un encuentro previo al Mundial 2014 (Argentina 1-0 Argelia) que generó gran expectativa."
+        },
+        {
+          "id": 57,
+          "equipo1": "Argentina",
+          "equipo2": "Jordania",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Argentina": 0, "empates": 0, "Jordania": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Jordania hace su debut mundialista en 2026. Se han enfrentado en amistosos internacionales."
+        },
+        {
+          "id": 58,
+          "equipo1": "Austria",
+          "equipo2": "Argelia",
+          "historial_copa_mundo": [
+            {
+              "año": 1982,
+              "sede": "España",
+              "fase": "Fase de grupos (Grupo 2)",
+              "resultado": "2-0",
+              "ganador": "Austria"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "Austria": 1, "empates": 0, "Argelia": 0 },
+          "otras_competencias_leyenda": "El Grupo 2 de 1982 es uno de los más legendarios: Argelia venció a Alemania Occidental 2-1 en el mayor upset del torneo, pero fue eliminada por el infame 'Pacto de Gijón' (Austria 1-0 Alemania en el último partido). Austria ganó el duelo directo con Argelia 2-0. Se han enfrentado también en amistosos internacionales."
+        },
+        {
+          "id": 59,
+          "equipo1": "Austria",
+          "equipo2": "Jordania",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Austria": 0, "empates": 0, "Jordania": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Jordania hace su debut mundialista en 2026."
+        },
+        {
+          "id": 60,
+          "equipo1": "Argelia",
+          "equipo2": "Jordania",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Argelia": 0, "empates": 0, "Jordania": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Jordania hace su debut mundialista en 2026."
+        }
+      ]
+    },
+    {
+      "grupo": "K",
+      "equipos": ["Portugal", "Colombia", "Uzbekistán", "Rep. Dem. del Congo"],
+      "partidos": [
+        {
+          "id": 61,
+          "equipo1": "Portugal",
+          "equipo2": "Colombia",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Portugal": 0, "empates": 0, "Colombia": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Portugal (1966, 1986, 2002, 2006, 2010, 2014, 2018, 2022) y Colombia (1962, 1990, 1994, 2014, 2018) nunca coincidieron en grupos ni en fase eliminatoria. Se han enfrentado en amistosos internacionales."
+        },
+        {
+          "id": 62,
+          "equipo1": "Portugal",
+          "equipo2": "Uzbekistán",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Portugal": 0, "empates": 0, "Uzbekistán": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Uzbekistán hace su debut mundialista en 2026."
+        },
+        {
+          "id": 63,
+          "equipo1": "Portugal",
+          "equipo2": "Rep. Dem. del Congo",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Portugal": 0, "empates": 0, "Rep. Dem. del Congo": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. El Congo (como Zaire) participó únicamente en el Mundial de 1974, edición en que Portugal no estuvo presente."
+        },
+        {
+          "id": 64,
+          "equipo1": "Colombia",
+          "equipo2": "Uzbekistán",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Colombia": 0, "empates": 0, "Uzbekistán": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Uzbekistán hace su debut mundialista en 2026."
+        },
+        {
+          "id": 65,
+          "equipo1": "Colombia",
+          "equipo2": "Rep. Dem. del Congo",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Colombia": 0, "empates": 0, "Rep. Dem. del Congo": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        },
+        {
+          "id": 66,
+          "equipo1": "Uzbekistán",
+          "equipo2": "Rep. Dem. del Congo",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Uzbekistán": 0, "empates": 0, "Rep. Dem. del Congo": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Uzbekistán hace su debut mundialista en 2026."
+        }
+      ]
+    },
+    {
+      "grupo": "L",
+      "equipos": ["Inglaterra", "Croacia", "Panamá", "Ghana"],
+      "partidos": [
+        {
+          "id": 67,
+          "equipo1": "Inglaterra",
+          "equipo2": "Croacia",
+          "historial_copa_mundo": [
+            {
+              "año": 2018,
+              "sede": "Rusia",
+              "fase": "Semifinal",
+              "resultado": "2-1 (tiempo extra)",
+              "ganador": "Croacia"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "Inglaterra": 0, "empates": 0, "Croacia": 1 },
+          "otras_competencias_leyenda": "Se enfrentaron en la fase de grupos de la Eurocopa 2020 (Inglaterra 1-0 Croacia, primer partido del torneo). La semifinal de 2018 es uno de los partidos más emotivos de la historia reciente: Croacia remontó con gol de Mandžukić en prórroga para llegar a su primera final. También han disputado encuentros en clasificatorios para la Eurocopa."
+        },
+        {
+          "id": 68,
+          "equipo1": "Inglaterra",
+          "equipo2": "Panamá",
+          "historial_copa_mundo": [
+            {
+              "año": 2018,
+              "sede": "Rusia",
+              "fase": "Fase de grupos (Grupo G)",
+              "resultado": "6-1",
+              "ganador": "Inglaterra"
+            }
+          ],
+          "total_partidos_mundiales": 1,
+          "balance_mundiales": { "Inglaterra": 1, "empates": 0, "Panamá": 0 },
+          "otras_competencias_leyenda": "Único antecedente mundialista. El 6-1 de 2018 fue el partido inaugural de Panamá en una Copa del Mundo. Harry Kane anotó hat-trick, y John Stones y Jesse Lingard también marcaron."
+        },
+        {
+          "id": 69,
+          "equipo1": "Inglaterra",
+          "equipo2": "Ghana",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Inglaterra": 0, "empates": 0, "Ghana": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. En 2010 ambos participaron en el torneo pero en grupos distintos sin cruzarse. Se han enfrentado en amistosos internacionales, incluyendo un amistoso en Wembley en 2011 (Ghana 1-1 Inglaterra)."
+        },
+        {
+          "id": 70,
+          "equipo1": "Croacia",
+          "equipo2": "Panamá",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Croacia": 0, "empates": 0, "Panamá": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. En 2018 Croacia estuvo en el Grupo D y Panamá en el Grupo G."
+        },
+        {
+          "id": 71,
+          "equipo1": "Croacia",
+          "equipo2": "Ghana",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Croacia": 0, "empates": 0, "Ghana": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo. Participaron en los mismos torneos (2006, 2014, 2022) sin coincidir en grupos ni en eliminatorias. Se han enfrentado en amistosos internacionales."
+        },
+        {
+          "id": 72,
+          "equipo1": "Panamá",
+          "equipo2": "Ghana",
+          "historial_copa_mundo": [],
+          "total_partidos_mundiales": 0,
+          "balance_mundiales": { "Panamá": 0, "empates": 0, "Ghana": 0 },
+          "otras_competencias_leyenda": "Sin antecedentes en Copas del Mundo."
+        }
+      ]
+    }
+  ]
+}

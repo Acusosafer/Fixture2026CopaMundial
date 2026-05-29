@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#0A0E1A"/>
+  <rect width="512" height="512" rx="112" fill="url(#grad)" opacity="0.6"/>
+  <defs>
+    <radialGradient id="grad" cx="30%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#1a2a4a"/>
+      <stop offset="100%" stop-color="#0A0E1A"/>
+    </radialGradient>
+  </defs>
+  <!-- Ball -->
+  <circle cx="256" cy="220" r="100" fill="none" stroke="#00D9FF" stroke-width="6" opacity="0.9"/>
+  <circle cx="256" cy="220" r="100" fill="rgba(0,217,255,0.06)"/>
+  <!-- Pentagon center -->
+  <polygon points="256,175 292,202 278,243 234,243 220,202" fill="#00D9FF" opacity="0.9"/>
+  <!-- Seams -->
+  <line x1="256" y1="120" x2="256" y2="175" stroke="#00D9FF" stroke-width="4" opacity="0.5"/>
+  <line x1="350" y1="175" x2="292" y2="202" stroke="#00D9FF" stroke-width="4" opacity="0.5"/>
+  <line x1="316" y1="313" x2="278" y2="243" stroke="#00D9FF" stroke-width="4" opacity="0.5"/>
+  <line x1="196" y1="313" x2="234" y2="243" stroke="#00D9FF" stroke-width="4" opacity="0.5"/>
+  <line x1="162" y1="175" x2="220" y2="202" stroke="#00D9FF" stroke-width="4" opacity="0.5"/>
+  <!-- 2026 text -->
+  <text x="256" y="375" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="900" fill="#00D9FF" text-anchor="middle" letter-spacing="-2">2026</text>
+</svg>

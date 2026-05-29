@@ -1,0 +1,121 @@
+import { staticMatches } from './fixtures-static';
+
+// ─── Tipo normalizado de score en vivo ──────────────────────
+export interface LiveScore {
+  staticMatchId: number;
+  fdMatchId?: number;    // ID interno de football-data.org (para detail)
+  homeScore: number;
+  awayScore: number;
+  minute: number;        // 0 = no iniciado, 45 = media hora, 90+ = final
+  injuryTime: number;
+  status: 'IN_PLAY' | 'PAUSED' | 'FINISHED' | 'SUSPENDED';
+}
+
+// ─── Eventos del partido ─────────────────────────────────────
+export type MatchEventType =
+  | 'GOAL' | 'OWN_GOAL' | 'PENALTY'
+  | 'YELLOW_CARD' | 'RED_CARD' | 'YELLOW_RED_CARD'
+  | 'SUBSTITUTION';
+
+export interface MatchEvent {
+  type: MatchEventType;
+  minute: number;
+  injuryTime: number;
+  team: 'home' | 'away';
+  playerName: string;
+  assistName?: string;    // para goles
+  playerInName?: string;  // para cambios (entra)
+}
+
+export interface LineupPlayer {
+  name: string;
+  number: number;
+  position: string;
+}
+
+export interface TeamLineup {
+  formation: string;
+  startingXI: LineupPlayer[];
+  substitutes: LineupPlayer[];
+}
+
+export interface MatchStats {
+  possession: { home: number; away: number } | null;
+  shots:       { home: number; away: number } | null;
+  shotsOnTarget:{ home: number; away: number } | null;
+  corners:     { home: number; away: number } | null;
+  fouls:       { home: number; away: number } | null;
+  offsides:    { home: number; away: number } | null;
+  yellowCards: { home: number; away: number } | null;
+  redCards:    { home: number; away: number } | null;
+}
+
+export interface MatchDetail {
+  staticMatchId: number;
+  fdMatchId: number;
+  events: MatchEvent[];
+  homeLineup: TeamLineup | null;
+  awayLineup: TeamLineup | null;
+  stats: MatchStats | null;
+}
+
+// ─── Head-to-head ─────────────────────────────────────────────
+export interface H2HMatch {
+  date: string;          // ISO date
+  homeTeamCode: string;
+  awayTeamCode: string;
+  homeScore: number;
+  awayScore: number;
+  competition: string;
+}
+
+export interface HeadToHead {
+  staticMatchId: number;
+  totalMatches: number;
+  homeWins: number;
+  awayWins: number;
+  draws: number;
+  matches: H2HMatch[];   // last 5
+}
+
+// ─── Mapping TLA (football-data.org) → nuestro código ISO ───
+// football-data.org usa abreviaciones de 3 letras (TLA).
+// Nuestros equipos usan ISO 3166-1 alpha-2 (2 letras) con excepciones.
+export const TLA_TO_CODE: Record<string, string> = {
+  // América
+  ARG: 'AR', BRA: 'BR', URU: 'UY', CHI: 'CL',
+  COL: 'CO', PER: 'PE', ECU: 'EC', PAR: 'PY',
+  MEX: 'MX', USA: 'US', CAN: 'CA', PAN: 'PA',
+  JAM: 'JM', HON: 'HN', CRC: 'CR',
+  // Europa
+  FRA: 'FR', GER: 'DE', ESP: 'ES', POR: 'PT',
+  NED: 'NL', BEL: 'BE', CRO: 'HR', SRB: 'RS',
+  DEN: 'DK', ALB: 'AL', TUR: 'TR', BIH: 'BA',
+  SUI: 'CH', CZE: 'CZ', AUT: 'AT', POL: 'PL',
+  ENG: 'GB-ENG', SCO: 'GB-SCT', WAL: 'GB-WLS',
+  // África
+  MAR: 'MA', NGA: 'NG', SEN: 'SN', CMR: 'CM',
+  CIV: 'CI', KEN: 'KE', TUN: 'TN', EGY: 'EG',
+  RSA: 'ZA', ALG: 'DZ', DZA: 'DZ', GHA: 'GH',
+  // Asia / Oceanía
+  JPN: 'JP', KOR: 'KR', AUS: 'AU', IDN: 'ID',
+  IRN: 'IR', CHN: 'CN', THA: 'TH', UZB: 'UZ',
+  BHR: 'BH', UAE: 'AE', SAU: 'SA', QAT: 'QA',
+  NZL: 'NZ', JOR: 'JO',
+};
+
+// ─── Helper: ¿hay partidos del Mundial en las próximas 2h? ──
+const TOURNAMENT_START = new Date('2026-06-12T19:00:00Z');
+const TOURNAMENT_END   = new Date('2026-07-19T23:59:00Z');
+
+export function isWithinTournament(now = new Date()): boolean {
+  return now >= TOURNAMENT_START && now <= TOURNAMENT_END;
+}
+
+export function hasMatchSoon(now = new Date()): boolean {
+  const windowMs = 2 * 60 * 60 * 1000; // ±2h
+  return staticMatches.some((m) => {
+    const d = new Date(m.date).getTime();
+    return Math.abs(d - now.getTime()) <= windowMs;
+  });
+}
