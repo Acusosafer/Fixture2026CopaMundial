@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,12 +8,7 @@ interface CountdownHeroProps {
   label: string;
 }
 
-interface TimeLeft {
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
+interface TimeLeft { days: number; hours: number; minutes: number; seconds: number; }
 
 function calculateTimeLeft(target: Date): TimeLeft {
   const diff = Math.max(0, target.getTime() - Date.now());
@@ -27,10 +22,7 @@ function calculateTimeLeft(target: Date): TimeLeft {
 
 const digits: (keyof TimeLeft)[] = ['days', 'hours', 'minutes', 'seconds'];
 const digitLabels: Record<keyof TimeLeft, string> = {
-  days: 'DÍAS',
-  hours: 'HORAS',
-  minutes: 'MIN',
-  seconds: 'SEG',
+  days: 'DÍAS', hours: 'HORAS', minutes: 'MIN', seconds: 'SEG',
 };
 
 const shouldReduceMotion = () =>
@@ -52,47 +44,28 @@ export function CountdownHero({ targetDate, label }: CountdownHeroProps) {
     ? timeLeft.days * 24 * 60 + timeLeft.hours * 60 + timeLeft.minutes
     : Infinity;
 
-  const isUrgent  = minutesRemaining <= 60;
+  const isUrgent = minutesRemaining <= 60;
   const isPulsing = minutesRemaining <= 5;
 
-  const accentColor  = isUrgent ? 'var(--ember)'           : 'var(--plasma)';
-  const accentDim    = isUrgent ? 'var(--ember-dim)'        : 'var(--plasma-dim)';
-  const accentBorder = isUrgent ? 'rgba(232,93,47,0.3)'     : 'rgba(123,94,167,0.3)';
-  const accentGlow   = isUrgent ? 'rgba(232,93,47,0.25)'    : 'rgba(123,94,167,0.2)';
+  const accent = isUrgent ? 'var(--ember)' : 'var(--accent)';
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <p
-        className="text-xs font-medium uppercase tracking-widest transition-colors duration-[600ms]"
-        style={{ color: isUrgent ? accentColor : 'var(--text-dim)' }}
-      >
+    <div className="cd-hero">
+      <p className="cd-hero-label" style={{ color: isUrgent ? accent : undefined }}>
         {label}
       </p>
 
       {isPulsing && (
-        <div
-          className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
-          style={{ background: accentDim, border: `1px solid ${accentBorder}`, color: accentColor }}
-        >
-          <span className="w-1.5 h-1.5 rounded-full animate-pulse-live" style={{ background: accentColor }} />
+        <div className="cd-soon" style={{ color: accent, borderColor: accent }}>
+          <span className="cd-soon-dot" style={{ background: accent }} />
           PRONTO
         </div>
       )}
 
-      <div className="flex items-center gap-2">
+      <div className="cd-row">
         {digits.map((key) => (
-          <div key={key} className="flex flex-col items-center">
-            <div
-              className="relative flex items-center justify-center rounded-2xl overflow-hidden transition-all duration-[600ms]"
-              style={{
-                width: 64,
-                height: 72,
-                background: accentDim,
-                backdropFilter: 'blur(24px) saturate(180%)',
-                border: `1px solid ${accentBorder}`,
-                boxShadow: `0 8px 32px -8px ${accentGlow}`,
-              }}
-            >
+          <div key={key} className="cd-cell">
+            <div className="cd-box" style={{ ['--cd-accent' as string]: accent }}>
               <AnimatePresence mode="popLayout">
                 <motion.span
                   key={timeLeft ? timeLeft[key] : '--'}
@@ -100,19 +73,13 @@ export function CountdownHero({ targetDate, label }: CountdownHeroProps) {
                   animate={{ y: 0, opacity: 1 }}
                   exit={reduceMotion ? {} : { y: 20, opacity: 0 }}
                   transition={{ type: 'spring', stiffness: 260, damping: 24 }}
-                  className="countdown-digit transition-colors duration-[600ms]"
-                  style={{ color: accentColor }}
+                  className="cd-value"
                 >
                   {timeLeft ? String(timeLeft[key]).padStart(2, '0') : '--'}
                 </motion.span>
               </AnimatePresence>
             </div>
-            <span
-              className="mt-1 text-[9px] font-semibold uppercase tracking-wider transition-colors duration-[600ms]"
-              style={{ color: isUrgent ? accentColor : 'var(--text-mute)' }}
-            >
-              {digitLabels[key]}
-            </span>
+            <span className="cd-cap">{digitLabels[key]}</span>
           </div>
         ))}
       </div>

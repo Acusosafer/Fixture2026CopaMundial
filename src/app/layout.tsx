@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist, Geist_Mono, Anton } from 'next/font/google';
 import { Providers } from '@/components/shell/Providers';
 import { TopBar } from '@/components/shell/TopBar';
 import { BottomNav } from '@/components/shell/BottomNav';
@@ -17,6 +17,13 @@ const geist = Geist({
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
+  display: 'swap',
+});
+
+const anton = Anton({
+  variable: '--font-display',
+  subsets: ['latin'],
+  weight: '400',
   display: 'swap',
 });
 
@@ -53,7 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geist.variable} ${geistMono.variable} dark`}
+      className={`${geist.variable} ${geistMono.variable} ${anton.variable} dark`}
       suppressHydrationWarning
     >
       <body

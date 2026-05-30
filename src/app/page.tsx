@@ -225,7 +225,7 @@ export default function HomePage() {
               Mi Selección
             </p>
             <h1
-              className="text-4xl font-black tracking-tight leading-none neon-text"
+              className="text-4xl font-black tracking-tight leading-none neon-text hero-team-title"
               style={{ color: 'var(--accent)' }}
             >
               {myTeam.nameEs}
