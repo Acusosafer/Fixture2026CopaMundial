@@ -51,6 +51,13 @@ export const metadata: Metadata = {
     title: 'Mundial 2026',
     description: 'Fixture, grupos y resultados del Mundial FIFA 2026.',
     type: 'website',
+    images: [{ url: '/logowhatsapp.png', width: 1200, height: 630, alt: 'Mundial 2026' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Mundial 2026',
+    description: 'Fixture, grupos y resultados del Mundial FIFA 2026.',
+    images: ['/logowhatsapp.png'],
   },
 };
 
@@ -78,6 +85,9 @@ export default function RootLayout({
             style={{ paddingBottom: 'calc(5rem + env(safe-area-inset-bottom))' }}
           >
             {children}
+            <footer className="text-center py-3 px-4" style={{ color: 'var(--text-mute)', fontSize: '11px' }}>
+              Creado por <span style={{ fontWeight: 600 }}>FAS Analytics</span>
+            </footer>
           </main>
           <BottomNav />
         </Providers>

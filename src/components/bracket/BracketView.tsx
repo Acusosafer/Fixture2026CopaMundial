@@ -15,10 +15,10 @@ const ROUNDS = [
 ] as const;
 
 const ROUND_DATES: Record<string, string> = {
-  R32: '4â€“6 jul',
-  R16: '8â€“9 jul',
-  QF:  '10â€“12 jul',
-  SF:  '14â€“15 jul',
+  R32: '4–6 jul',
+  R16: '8–9 jul',
+  QF:  '10–12 jul',
+  SF:  '14–15 jul',
   FIN: '19 jul',
   TPO: '18 jul',
 };
@@ -36,9 +36,9 @@ function formatDate(iso: string): string {
 
 function teamLabel(code: string): string {
   if (!code || code === 'TBD') return 'Por definir';
-  // W73, W89, etc. â€” winner of match N
+  // W73, W89, etc. – winner of match N
   if (/^W\d+$/.test(code)) return `Gan. P${code.slice(1)}`;
-  // RU101 â€” runner-up of match N
+  // RU101 – runner-up of match N
   if (/^RU\d+$/.test(code)) return `Sub. P${code.slice(2)}`;
   // 1A â€” first place group A
   if (/^\d[A-L]$/.test(code)) return `${code[0]}° Grupo ${code[1]}`;

@@ -39,8 +39,8 @@ export function TopBar() {
           <Image
             src="/trophy.png"
             alt="Copa del Mundo"
-            width={30}
-            height={56}
+            width={60}
+            height={112}
             priority
             style={{ objectFit: 'contain' }}
           />
