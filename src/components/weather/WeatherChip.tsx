@@ -35,16 +35,14 @@ export function WeatherChip() {
     retry: 1,
   });
 
-  const isCoolingRisk = !!data && (data.isCoolingBreakRisk || data.temperature >= 32 || data.humidity >= 75);
-
   return (
     <div className="flex flex-wrap items-center gap-1.5">
       <div
-        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors duration-300"
+        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
         style={{
-          background: isCoolingRisk ? 'var(--ember-dim)' : 'var(--border-color)',
-          border: `1px solid ${isCoolingRisk ? 'var(--ember)' : 'rgba(255,255,255,0.08)'}`,
-          color: isCoolingRisk ? 'var(--ember)' : 'var(--text-dim)',
+          background: 'var(--border-color)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          color: 'var(--text-dim)',
         }}
       >
         <span>🌡</span>
@@ -58,19 +56,6 @@ export function WeatherChip() {
           </>
         )}
       </div>
-
-      {isCoolingRisk && (
-        <div
-          className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold"
-          style={{
-            background: 'var(--ember-dim)',
-            border: '1px solid var(--ember)',
-            color: 'var(--ember)',
-          }}
-        >
-          ⚠ Cooling break probable
-        </div>
-      )}
     </div>
   );
 }

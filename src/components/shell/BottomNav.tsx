@@ -2,9 +2,12 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { MoreHorizontal } from 'lucide-react';
+import { usePreferences } from '@/store/preferences';
+import { getTeamByCode } from '@/lib/teams';
 
 // ── Animated custom icons ───────────────────────────────────
 
@@ -95,6 +98,8 @@ const navItems = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const myTeamCode = usePreferences((s) => s.myTeamCode);
+  const myTeam = myTeamCode ? getTeamByCode(myTeamCode) : null;
 
   return (
     <nav
@@ -116,7 +121,16 @@ export function BottomNav() {
             style={{ color: isActive ? 'var(--accent)' : 'var(--text-dim)' }}
             aria-current={isActive ? 'page' : undefined}
           >
-            {Icon ? (
+            {href === '/' && myTeam?.flagUrl ? (
+              <motion.div
+                animate={isActive ? { scale: [1, 1.12, 1] } : { scale: 1 }}
+                transition={{ duration: 0.35 }}
+                className="relative overflow-hidden rounded-sm"
+                style={{ width: 28, height: 19, border: isActive ? '1.5px solid var(--accent)' : '1px solid rgba(255,255,255,0.18)' }}
+              >
+                <Image src={myTeam.flagUrl} alt={myTeam.nameEs} fill className="object-cover" unoptimized />
+              </motion.div>
+            ) : Icon ? (
               <Icon active={isActive} />
             ) : (
               <motion.div

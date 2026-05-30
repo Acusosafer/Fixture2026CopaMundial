@@ -165,9 +165,9 @@ export default function FixturePage() {
             onClick={() => router.push('/bracket')}
             className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all active:scale-95"
             style={{
-              background: 'rgba(255,215,0,0.08)',
-              border: '1px solid rgba(255,215,0,0.3)',
-              color: '#FFD700',
+              background: 'var(--accent-dim)',
+              border: '1px solid var(--accent-border)',
+              color: 'var(--accent)',
             }}
           >
             <GitBranch size={11} />
