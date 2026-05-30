@@ -141,23 +141,38 @@ export default function FixturePage() {
         className="sticky top-14 z-20 px-4 pt-4 pb-3 glass-nav"
         style={{ borderBottom: '1px solid var(--border-color)' }}
       >
-        <div className="flex items-baseline gap-2 mb-3">
-          <h1 className="font-heading text-4xl tracking-wide" style={{ color: 'var(--text)' }}>
-            FIXTURE
-          </h1>
-          {!isLoading && (
-            <span className="text-sm" style={{ color: 'var(--text-mute)' }}>
-              {groupMatches.length} partidos
-            </span>
-          )}
-          {liveCount > 0 && (
-            <span
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
-              style={{ background: 'var(--live-dim)', color: 'var(--live)', border: '1px solid var(--live-border)' }}
-            >
-              ● {liveCount} en vivo
-            </span>
-          )}
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <div className="flex items-baseline gap-2">
+            <h1 className="font-heading text-4xl tracking-wide" style={{ color: 'var(--text)' }}>
+              FIXTURE
+            </h1>
+            {!isLoading && (
+              <span className="text-sm" style={{ color: 'var(--text-mute)' }}>
+                {groupMatches.length} partidos
+              </span>
+            )}
+            {liveCount > 0 && (
+              <span
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                style={{ background: 'var(--live-dim)', color: 'var(--live)', border: '1px solid var(--live-border)' }}
+              >
+                ● {liveCount} en vivo
+              </span>
+            )}
+          </div>
+          {/* Cruces shortcut */}
+          <button
+            onClick={() => router.push('/bracket')}
+            className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all active:scale-95"
+            style={{
+              background: 'rgba(255,215,0,0.08)',
+              border: '1px solid rgba(255,215,0,0.3)',
+              color: '#FFD700',
+            }}
+          >
+            <GitBranch size={11} />
+            Cruces
+          </button>
         </div>
 
         {/* Filter chips */}
@@ -182,22 +197,6 @@ export default function FixturePage() {
             />
           ))}
 
-          {/* Divider */}
-          <span className="flex-shrink-0 self-center w-px h-4 mx-1" style={{ background: 'var(--border-color)' }} />
-
-          {/* Cruces link chip */}
-          <button
-            onClick={() => router.push('/bracket')}
-            className="flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all active:scale-95"
-            style={{
-              background: 'rgba(255,215,0,0.08)',
-              border: '1px solid rgba(255,215,0,0.25)',
-              color: '#FFD700',
-            }}
-          >
-            <GitBranch size={11} />
-            Cruces
-          </button>
         </div>
       </div>
 

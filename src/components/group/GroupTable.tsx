@@ -118,9 +118,11 @@ const CELL_DIM  = `${CELL} text-[#8892B0]`;
 interface GroupTableProps {
   group: Group;
   matches: StaticMatch[];
+  /** Códigos de equipos que son mejor-3ro clasificado (calculado globalmente) */
+  bestThirds?: Set<string>;
 }
 
-export function GroupTable({ group, matches }: GroupTableProps) {
+export function GroupTable({ group, matches, bestThirds }: GroupTableProps) {
   const [simulated, setSimulated]   = useState<SimulatedResults>({});
   const [simOpen, setSimOpen]       = useState(false);
 
@@ -233,11 +235,11 @@ export function GroupTable({ group, matches }: GroupTableProps) {
             <tbody>
               {table.map((team, idx) => {
                 const pos = idx + 1;
-                const isTop2  = pos <= 2;
-                const isThird = pos === 3;
-                const real    = realByCode.get(team.code);
+                const isTop2      = pos <= 2;
+                const isThird     = pos === 3;
+                const isBest3rd   = isThird && bestThirds && bestThirds.size > 0 && bestThirds.has(team.code);
+                const real        = realByCode.get(team.code);
 
-                // ¿cambió algún stat respecto a la tabla real?
                 const changed = real
                   ? real.pts !== team.pts || real.pj !== team.pj || real.dg !== team.dg
                   : false;
@@ -245,8 +247,10 @@ export function GroupTable({ group, matches }: GroupTableProps) {
                 const plasma = 'var(--plasma, #6366f1)';
 
                 let rowBorder = '';
-                if (isTop2)  rowBorder = '2px solid rgba(16, 240, 160, 0.25)';
-                if (isThird) rowBorder = '2px solid rgba(255, 215, 0, 0.2)';
+                if (isTop2)    rowBorder = '2px solid rgba(16, 240, 160, 0.25)';
+                if (isBest3rd) rowBorder = '2px solid rgba(251, 146, 60, 0.4)';
+                else if (isThird && !isBest3rd && bestThirds && bestThirds.size > 0)
+                  rowBorder = '2px solid rgba(255,255,255,0.06)';
 
                 function cellColor(val: number, realVal: number, defaultColor: string) {
                   return isSimulating && changed && val !== realVal ? plasma : defaultColor;
@@ -307,14 +311,14 @@ export function GroupTable({ group, matches }: GroupTableProps) {
         </div>
 
         {/* Leyenda */}
-        <div className="px-4 py-2.5 flex items-center gap-4" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+        <div className="px-4 py-2.5 flex items-center gap-3 flex-wrap" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
           <div className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-sm" style={{ background: 'rgba(16, 240, 160, 0.35)' }} />
-            <span className="text-[10px]" style={{ color: 'var(--text-mute)' }}>Clasifica</span>
+            <span className="text-[10px]" style={{ color: 'var(--text-mute)' }}>Clasifica directo</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-sm" style={{ background: 'rgba(255, 215, 0, 0.3)' }} />
-            <span className="text-[10px]" style={{ color: 'var(--text-mute)' }}>Posible mejor tercero</span>
+            <div className="w-2.5 h-2.5 rounded-sm" style={{ background: 'rgba(251, 146, 60, 0.4)' }} />
+            <span className="text-[10px]" style={{ color: 'var(--text-mute)' }}>Mejor 3ro</span>
           </div>
           {isSimulating && (
             <div className="flex items-center gap-1.5 ml-auto">

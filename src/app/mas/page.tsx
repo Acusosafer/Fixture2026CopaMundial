@@ -47,9 +47,9 @@ const menuItems: MenuCard[] = [
   {
     icon: Settings,
     title: 'Configuración',
-    description: 'Preferencias y ajustes de la app',
-    href: '#',
-    active: false,
+    description: 'Tema, notificaciones y preferencias',
+    href: '/ajustes',
+    active: true,
   },
 ];
 
