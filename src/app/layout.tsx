@@ -39,7 +39,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://fixture2026-copa-mundial.vercel.app'),
+  metadataBase: new URL('https://fixture2026-copamundial.vercel.app'),
   title: 'Mundial 2026',
   description: 'Seguí el Mundial FIFA 2026 en tiempo real. Fixture, grupos, resultados y más.',
   manifest: '/manifest.json',
