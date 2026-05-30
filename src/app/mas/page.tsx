@@ -17,7 +17,7 @@ interface MenuCard {
 const menuItems: MenuCard[] = [
   {
     icon: GitBranch,
-    title: 'Bracket',
+    title: 'Cruces',
     description: 'Cuadro de eliminación directa del torneo',
     href: '/bracket',
     active: true,

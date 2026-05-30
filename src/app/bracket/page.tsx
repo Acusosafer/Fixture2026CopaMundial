@@ -2,7 +2,7 @@
 import { BracketView } from '@/components/bracket/BracketView';
 
 export const metadata = {
-  title: 'Bracket · Mundial 2026',
+  title: 'Cruces · Mundial 2026',
 };
 
 export default function BracketPage() {
@@ -16,7 +16,7 @@ export default function BracketPage() {
             className="text-2xl font-black tracking-tight"
             style={{ color: 'var(--text)' }}
           >
-            Bracket
+            Cruces
           </h1>
         </div>
         <p className="text-sm" style={{ color: 'var(--text-dim)' }}>
