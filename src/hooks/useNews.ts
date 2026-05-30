@@ -5,6 +5,7 @@ import type { NewsItem } from '@/app/api/news/route';
 export function useNews(): {
   news: NewsItem[];
   isLoading: boolean;
+  isFetching: boolean;
   error: Error | null;
   refetch: () => void;
 } {
@@ -16,13 +17,14 @@ export function useNews(): {
       const json = (await res.json()) as { data?: NewsItem[] };
       return json.data ?? [];
     },
-    staleTime: 1000 * 60 * 5,   // 5 min
+    staleTime: 0,
     refetchInterval: 1000 * 60 * 5,
   });
 
   return {
     news: query.data ?? [],
     isLoading: query.isLoading,
+    isFetching: query.isFetching,
     error: query.error,
     refetch: query.refetch,
   };

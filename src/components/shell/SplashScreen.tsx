@@ -55,8 +55,8 @@ export function SplashScreen() {
             <Image
               src="/trophy.png"
               alt="Copa del Mundo"
-              width={92}
-              height={173}
+              width={140}
+              height={263}
               priority
               style={{ display: 'block', position: 'relative', zIndex: 1 }}
               className="splash-trophy-img"

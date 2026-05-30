@@ -166,7 +166,6 @@ async function fetchEdulTweets(bearerToken: string): Promise<NewsItem[]> {
     const tweets = json.data ?? [];
 
     return tweets
-      .filter((t) => isSoccerNationalTeamTweet(t.text))
       .map((t) => ({
         id: `tweet-${t.id}`,
         title: t.text.replace(/https:\/\/t\.co\/\S+/g, '').trim(),

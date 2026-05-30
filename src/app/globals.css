@@ -393,7 +393,7 @@ html.light .glass-card {
 
 /* ───────────────────────── LOGO (TopBar) ───────────────────────── */
 .wc-logo { display: flex; align-items: center; gap: 9px; }
-.wc-logo-ball { width: 26px; height: 49px; display: grid; place-items: center; }
+.wc-logo-ball { width: 30px; height: 56px; display: grid; place-items: center; overflow: visible; }
 .wc-logo-ball img { display: block; animation: wc-logo-pop 0.8s cubic-bezier(0.3,1.4,0.5,1) both; }
 .wc-logo-text {
   font-family: var(--font-display), 'Anton', system-ui, sans-serif;
