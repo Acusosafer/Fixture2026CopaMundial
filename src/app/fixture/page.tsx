@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { GitBranch } from 'lucide-react';
 import { useFixtures } from '@/hooks/useFixtures';
 import { useLiveScores } from '@/hooks/useLiveScores';
 import { usePreferences } from '@/store/preferences';
@@ -13,12 +15,10 @@ import type { StaticMatch } from '@/lib/fixtures-static';
 
 const GROUPS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'] as const;
 
-function isSameDay(a: Date, b: Date): boolean {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
+// Returns YYYY-MM-DD in Argentina timezone (UTC-3, no DST)
+function getLocalDay(isoDate: string): string {
+  const d = new Date(new Date(isoDate).getTime() - 3 * 60 * 60 * 1000);
+  return d.toISOString().slice(0, 10);
 }
 
 function formatDateHeader(isoDate: string): string {
@@ -30,39 +30,34 @@ function formatDateHeader(isoDate: string): string {
   }).format(new Date(isoDate));
 }
 
-function getLocalDay(isoDate: string): string {
-  // Returns YYYY-MM-DD in Argentina timezone for grouping
-  return new Intl.DateTimeFormat('es-AR', {
-    timeZone: 'America/Argentina/Buenos_Aires',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date(isoDate));
-}
-
 // ──────────────────────────────────────────────────────────
 // Filter chips
 // ──────────────────────────────────────────────────────────
 
-type FilterValue = 'all' | 'today' | 'myteam' | (typeof GROUPS)[number];
+type FilterValue = 'all' | 'today' | (typeof GROUPS)[number];
 
-interface FilterChipProps {
+function FilterChip({
+  label,
+  active,
+  onClick,
+  icon,
+}: {
   label: string;
   active: boolean;
   onClick: () => void;
-}
-
-function FilterChip({ label, active, onClick }: FilterChipProps) {
+  icon?: React.ReactNode;
+}) {
   return (
     <button
       onClick={onClick}
-      className="flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all"
+      className="flex-shrink-0 inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all active:scale-95"
       style={
         active
           ? { background: 'var(--accent)', color: 'var(--accent-fg)' }
           : { background: 'var(--border-subtle)', color: 'var(--text-dim)', border: '1px solid var(--border-color)' }
       }
     >
+      {icon}
       {label}
     </button>
   );
@@ -101,38 +96,34 @@ function SkeletonCard() {
 export default function FixturePage() {
   const { matches, isLoading } = useFixtures();
   const { scores: liveScores, liveCount } = useLiveScores();
-  const myTeamCode = usePreferences((s) => s.myTeamCode);
+  usePreferences((s) => s.myTeamCode);
+  const router = useRouter();
   const [activeFilter, setActiveFilter] = useState<FilterValue>('all');
 
-  // Today in ARG timezone
+  // Today in ARG timezone (YYYY-MM-DD)
   const todayStr = useMemo(() => {
-    return new Intl.DateTimeFormat('es-AR', {
-      timeZone: 'America/Argentina/Buenos_Aires',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    }).format(new Date());
+    const d = new Date(Date.now() - 3 * 60 * 60 * 1000);
+    return d.toISOString().slice(0, 10);
   }, []);
+
+  // Only group stage matches (A-L), sorted chronologically
+  const groupMatches = useMemo(
+    () => matches.filter((m) => GROUPS.includes(m.group as (typeof GROUPS)[number])),
+    [matches]
+  );
 
   const filtered = useMemo<StaticMatch[]>(() => {
     switch (activeFilter) {
       case 'today':
-        return matches.filter((m) => getLocalDay(m.date) === todayStr);
-      case 'myteam':
-        return matches.filter(
-          (m) =>
-            m.homeTeamCode.toLowerCase() === myTeamCode.toLowerCase() ||
-            m.awayTeamCode.toLowerCase() === myTeamCode.toLowerCase()
-        );
+        return groupMatches.filter((m) => getLocalDay(m.date) === todayStr);
       case 'all':
-        return matches;
+        return groupMatches;
       default:
-        // Group filter (A-L)
-        return matches.filter((m) => m.group === activeFilter);
+        return groupMatches.filter((m) => m.group === activeFilter);
     }
-  }, [matches, activeFilter, myTeamCode, todayStr]);
+  }, [groupMatches, activeFilter, todayStr]);
 
-  // Group by local date
+  // Group by local date, sorted ascending
   const grouped = useMemo(() => {
     const map = new Map<string, StaticMatch[]>();
     for (const m of filtered) {
@@ -140,20 +131,12 @@ export default function FixturePage() {
       if (!map.has(day)) map.set(day, []);
       map.get(day)!.push(m);
     }
-    // Sort days
     return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b));
   }, [filtered]);
 
-  const filters: Array<{ value: FilterValue; label: string }> = [
-    { value: 'all', label: 'Todos' },
-    { value: 'today', label: 'Hoy' },
-    { value: 'myteam', label: 'Mi Selección' },
-    ...GROUPS.map((g) => ({ value: g as FilterValue, label: `Grupo ${g}` })),
-  ];
-
   return (
     <main className="min-h-screen pb-24" style={{ background: 'var(--bg)' }}>
-      {/* Header */}
+      {/* Sticky header */}
       <div
         className="sticky top-14 z-20 px-4 pt-4 pb-3 glass-nav"
         style={{ borderBottom: '1px solid var(--border-color)' }}
@@ -164,7 +147,7 @@ export default function FixturePage() {
           </h1>
           {!isLoading && (
             <span className="text-sm" style={{ color: 'var(--text-mute)' }}>
-              {matches.length} partidos
+              {groupMatches.length} partidos
             </span>
           )}
           {liveCount > 0 && (
@@ -179,14 +162,42 @@ export default function FixturePage() {
 
         {/* Filter chips */}
         <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-          {filters.map((f) => (
+          <FilterChip
+            label="Hoy"
+            active={activeFilter === 'today'}
+            onClick={() => setActiveFilter('today')}
+          />
+
+          {/* Group divider label */}
+          <span className="flex-shrink-0 self-center text-[10px] px-1" style={{ color: 'var(--text-mute)' }}>
+            Grupo:
+          </span>
+
+          {GROUPS.map((g) => (
             <FilterChip
-              key={f.value}
-              label={f.label}
-              active={activeFilter === f.value}
-              onClick={() => setActiveFilter(f.value)}
+              key={g}
+              label={g}
+              active={activeFilter === g}
+              onClick={() => setActiveFilter(activeFilter === g ? 'all' : g)}
             />
           ))}
+
+          {/* Divider */}
+          <span className="flex-shrink-0 self-center w-px h-4 mx-1" style={{ background: 'var(--border-color)' }} />
+
+          {/* Cruces link chip */}
+          <button
+            onClick={() => router.push('/bracket')}
+            className="flex-shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all active:scale-95"
+            style={{
+              background: 'rgba(255,215,0,0.08)',
+              border: '1px solid rgba(255,215,0,0.25)',
+              color: '#FFD700',
+            }}
+          >
+            <GitBranch size={11} />
+            Cruces
+          </button>
         </div>
       </div>
 
@@ -199,23 +210,40 @@ export default function FixturePage() {
             ))}
           </div>
         ) : grouped.length === 0 ? (
-          <div
-            className="flex flex-col items-center justify-center py-20 gap-3"
-          >
-            <span className="text-4xl">🔍</span>
-            <p className="text-sm" style={{ color: 'var(--text-dim)' }}>
-              No hay partidos con este filtro
-            </p>
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            {activeFilter === 'today' ? (
+              <>
+                <span className="text-4xl">📅</span>
+                <p className="text-sm font-semibold" style={{ color: 'var(--text-dim)' }}>
+                  No hay partidos hoy
+                </p>
+                <p className="text-xs text-center" style={{ color: 'var(--text-mute)' }}>
+                  El torneo comienza el 11 de junio de 2026
+                </p>
+                <button
+                  onClick={() => setActiveFilter('all')}
+                  className="text-xs font-semibold px-4 py-2 rounded-xl mt-1"
+                  style={{ background: 'var(--border-color)', color: 'var(--text)' }}
+                >
+                  Ver todos los partidos
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="text-4xl">🔍</span>
+                <p className="text-sm" style={{ color: 'var(--text-dim)' }}>
+                  No hay partidos con este filtro
+                </p>
+              </>
+            )}
           </div>
         ) : (
           grouped.map(([day, dayMatches]) => {
             const headerText = formatDateHeader(dayMatches[0].date);
-            const capitalizedHeader =
-              headerText.charAt(0).toUpperCase() + headerText.slice(1);
+            const capitalizedHeader = headerText.charAt(0).toUpperCase() + headerText.slice(1);
 
             return (
               <section key={day}>
-                {/* Date header */}
                 <h2
                   className="font-heading text-lg tracking-widest mb-3"
                   style={{ color: 'var(--text-dim)' }}

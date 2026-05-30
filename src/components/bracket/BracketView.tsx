@@ -1,30 +1,27 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Calendar, MapPin } from 'lucide-react';
+import { Calendar, MapPin, ChevronRight } from 'lucide-react';
 import { staticMatches } from '@/lib/fixtures-static';
 
+// ── Round config ──────────────────────────────────────────────────────────────
+
 const ROUNDS = [
-  { key: 'R32',  label: 'Dieciseisavos', short: 'R32', matchCount: 16 },
-  { key: 'R16',  label: 'Octavos',        short: 'R16', matchCount: 8 },
-  { key: 'QF',   label: 'Cuartos',        short: 'CF',  matchCount: 4 },
-  { key: 'SF',   label: 'Semifinal',      short: 'SF',  matchCount: 2 },
-  { key: 'FIN',  label: 'Final',          short: 'F',   matchCount: 1 },
-  { key: 'TPO',  label: '3er Puesto',     short: '3°',  matchCount: 1 },
+  { key: 'R32', label: 'Dieciseisavos', short: '32vos', matchCount: 16, dates: '4–6 jul', color: '#60A5FA', bg: 'rgba(96,165,250,0.12)', border: 'rgba(96,165,250,0.3)' },
+  { key: 'R16', label: 'Octavos',       short: 'Octavos', matchCount: 8,  dates: '8–9 jul', color: '#A78BFA', bg: 'rgba(167,139,250,0.12)', border: 'rgba(167,139,250,0.3)' },
+  { key: 'QF',  label: 'Cuartos',       short: 'Cuartos', matchCount: 4,  dates: '10–12 jul', color: '#FB923C', bg: 'rgba(251,146,60,0.12)',  border: 'rgba(251,146,60,0.3)' },
+  { key: 'SF',  label: 'Semifinal',     short: 'Semi',   matchCount: 2,  dates: '14–15 jul', color: '#F87171', bg: 'rgba(248,113,113,0.12)', border: 'rgba(248,113,113,0.3)' },
+  { key: 'FIN', label: 'Final',         short: 'Final',  matchCount: 1,  dates: '19 jul',    color: '#FFD700', bg: 'rgba(255,215,0,0.12)',   border: 'rgba(255,215,0,0.35)' },
+  { key: 'TPO', label: '3er Puesto',    short: '3° Pto', matchCount: 1,  dates: '18 jul',    color: '#94A3B8', bg: 'rgba(148,163,184,0.10)', border: 'rgba(148,163,184,0.25)' },
 ] as const;
 
-const ROUND_DATES: Record<string, string> = {
-  R32: '4–6 jul',
-  R16: '8–9 jul',
-  QF:  '10–12 jul',
-  SF:  '14–15 jul',
-  FIN: '19 jul',
-  TPO: '18 jul',
-};
+type RoundKey = typeof ROUNDS[number]['key'];
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 const ART = -3 * 60 * 60 * 1000;
-const DAYS_SHORT  = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+const DAYS_SHORT   = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
 const MONTHS_SHORT = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
 function formatDate(iso: string): string {
@@ -40,9 +37,9 @@ function teamLabel(code: string): string {
   if (/^W\d+$/.test(code)) return `Gan. P${code.slice(1)}`;
   // RU101 – runner-up of match N
   if (/^RU\d+$/.test(code)) return `Sub. P${code.slice(2)}`;
-  // 1A â€” first place group A
-  if (/^\d[A-L]$/.test(code)) return `${code[0]}° Grupo ${code[1]}`;
-  // 3ABCDF â€” best 3rd-place from those groups
+  // 1A – first place group A
+  if (/^\d[A-L]$/.test(code)) return `${code[0]}° Grp ${code[1]}`;
+  // 3ABCDF – best 3rd-place from those groups
   if (/^\d[A-L]{2,}$/.test(code)) {
     const pos    = code[0];
     const groups = code.slice(1).split('');
@@ -51,45 +48,106 @@ function teamLabel(code: string): string {
   return code;
 }
 
-function MatchRow({ id, home, away, date, venue }: {
+// ── Tournament flow bar ───────────────────────────────────────────────────────
+
+function TournamentFlow({ activeKey, onSelect }: { activeKey: RoundKey; onSelect: (k: RoundKey) => void }) {
+  const main = ROUNDS.filter((r) => r.key !== 'TPO');
+  const tpo  = ROUNDS.find((r) => r.key === 'TPO')!;
+
+  return (
+    <div className="flex flex-col gap-2">
+      {/* Main path */}
+      <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
+        {main.map((r, i) => {
+          const active = activeKey === r.key;
+          return (
+            <div key={r.key} className="flex items-center gap-1 flex-shrink-0">
+              <button
+                onClick={() => onSelect(r.key)}
+                className="flex flex-col items-center px-3 py-2 rounded-xl transition-all active:scale-95"
+                style={{
+                  background: active ? r.bg : 'var(--border-subtle)',
+                  border: `1px solid ${active ? r.border : 'rgba(255,255,255,0.07)'}`,
+                  minWidth: 64,
+                }}
+              >
+                <span className="text-[11px] font-black leading-none" style={{ color: active ? r.color : 'var(--text-mute)' }}>
+                  {r.short}
+                </span>
+                <span className="text-[9px] mt-0.5 opacity-60" style={{ color: active ? r.color : 'var(--text-mute)' }}>
+                  {r.matchCount}P · {r.dates}
+                </span>
+              </button>
+              {i < main.length - 1 && (
+                <ChevronRight size={12} style={{ color: 'var(--border-color)', flexShrink: 0 }} />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 3rd place */}
+      <button
+        onClick={() => onSelect('TPO')}
+        className="self-start flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all active:scale-95"
+        style={{
+          background: activeKey === 'TPO' ? tpo.bg : 'var(--border-subtle)',
+          border: `1px solid ${activeKey === 'TPO' ? tpo.border : 'rgba(255,255,255,0.06)'}`,
+        }}
+      >
+        <span className="text-[10px]" style={{ color: activeKey === 'TPO' ? tpo.color : 'var(--text-mute)' }}>
+          🥉 {tpo.label} · {tpo.dates}
+        </span>
+      </button>
+    </div>
+  );
+}
+
+// ── Match card ────────────────────────────────────────────────────────────────
+
+function MatchRow({ id, home, away, date, venue, roundColor }: {
   id: number;
   home: string;
   away: string;
   date: string;
   venue: string;
+  roundColor: string;
 }) {
   const isTBD = (c: string) => !c || c === 'TBD' || /^[W1-3]/.test(c);
 
   return (
     <Link
       href={`/partido/${id}`}
-      className="rounded-2xl p-3.5 flex flex-col gap-2 transition-all active:scale-[0.98] hover:border-white/20"
+      className="rounded-2xl p-4 flex flex-col gap-3 transition-all active:scale-[0.98]"
       style={{
         background: 'var(--bg-card)',
         backdropFilter: 'blur(12px)',
         border: '1px solid rgba(255,255,255,0.08)',
-        display: 'flex',
+        boxShadow: `0 0 0 1px transparent`,
       }}
     >
-      {/* Teams */}
-      <div className="flex items-center justify-between gap-3">
+      {/* Teams row */}
+      <div className="flex items-center gap-2">
         <span
-          className="text-sm font-semibold flex-1 truncate"
+          className="text-sm font-bold flex-1 truncate"
           style={{ color: isTBD(home) ? 'var(--text-mute)' : 'var(--text)' }}
         >
           {teamLabel(home)}
         </span>
+
         <span
-          className="text-xs font-bold px-2 py-0.5 rounded-md tabular-nums shrink-0"
+          className="text-[11px] font-black px-2.5 py-1 rounded-lg tabular-nums shrink-0"
           style={{
-            background: 'var(--border-color)',
-            color: 'var(--text-dim)',
+            background: `color-mix(in srgb, ${roundColor} 15%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${roundColor} 30%, transparent)`,
+            color: roundColor,
           }}
         >
           VS
         </span>
+
         <span
-          className="text-sm font-semibold flex-1 truncate text-right"
+          className="text-sm font-bold flex-1 truncate text-right"
           style={{ color: isTBD(away) ? 'var(--text-mute)' : 'var(--text)' }}
         >
           {teamLabel(away)}
@@ -97,16 +155,16 @@ function MatchRow({ id, home, away, date, venue }: {
       </div>
 
       {/* Date + venue */}
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5">
           <Calendar size={11} style={{ color: 'var(--text-mute)' }} />
           <span className="text-[11px]" style={{ color: 'var(--text-mute)' }}>
             {formatDate(date)}
           </span>
         </div>
-        <div className="flex items-center gap-1">
-          <MapPin size={11} style={{ color: 'var(--text-mute)' }} />
-          <span className="text-[11px] truncate max-w-[140px]" style={{ color: 'var(--text-mute)' }}>
+        <div className="flex items-center gap-1 min-w-0">
+          <MapPin size={11} style={{ color: 'var(--text-mute)', flexShrink: 0 }} />
+          <span className="text-[11px] truncate" style={{ color: 'var(--text-mute)', maxWidth: 130 }}>
             {venue.replace('Estadio ', '')}
           </span>
         </div>
@@ -115,88 +173,88 @@ function MatchRow({ id, home, away, date, venue }: {
   );
 }
 
+// ── Main component ────────────────────────────────────────────────────────────
+
 export function BracketView() {
-  const [activeRound, setActiveRound] = useState<typeof ROUNDS[number]['key']>('R32');
+  const [activeRound, setActiveRound] = useState<RoundKey>('R32');
 
+  const round        = ROUNDS.find((r) => r.key === activeRound)!;
   const roundMatches = staticMatches.filter((m) => m.group === activeRound);
-
-  const isFinal   = activeRound === 'FIN';
-  const isTercero = activeRound === 'TPO';
+  const isFinal      = activeRound === 'FIN';
+  const isTercero    = activeRound === 'TPO';
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Round tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-        {ROUNDS.map((r) => {
-          const active = activeRound === r.key;
-          return (
-            <button
-              key={r.key}
-              onClick={() => setActiveRound(r.key)}
-              className="flex-shrink-0 flex flex-col items-center px-3.5 py-2 rounded-xl transition-all"
-              style={
-                active
-                  ? {
-                      background: r.key === 'FIN' ? 'rgba(255,215,0,0.15)' : 'var(--accent-dim)',
-                      border: r.key === 'FIN'
-                        ? '1px solid rgba(255,215,0,0.4)'
-                        : '1px solid var(--accent-border)',
-                      color: r.key === 'FIN' ? '#FFD700' : 'var(--accent)',
-                    }
-                  : {
-                      background: 'var(--border-subtle)',
-                      border: '1px solid rgba(255,255,255,0.07)',
-                      color: 'var(--text-mute)',
-                    }
-              }
-            >
-              <span className="text-xs font-black leading-none">{r.short}</span>
-              <span className="text-[9px] mt-0.5 opacity-70">
-                {ROUND_DATES[r.key]}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+    <div className="flex flex-col gap-5">
 
-      {/* Round title */}
-      <div className="flex items-baseline justify-between">
-        <h2
-          className="text-base font-black"
-          style={{ color: isFinal ? '#FFD700' : 'var(--text)' }}
+      {/* Tournament flow selector */}
+      <TournamentFlow activeKey={activeRound} onSelect={setActiveRound} />
+
+      {/* Round header */}
+      <div
+        className="flex items-center justify-between px-4 py-3 rounded-2xl"
+        style={{ background: round.bg, border: `1px solid ${round.border}` }}
+      >
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-0.5" style={{ color: round.color, opacity: 0.7 }}>
+            {round.dates}
+          </p>
+          <h2 className="text-xl font-black" style={{ color: round.color }}>
+            {round.label}
+          </h2>
+        </div>
+        <div
+          className="flex flex-col items-center justify-center rounded-xl px-3 py-2"
+          style={{ background: `color-mix(in srgb, ${round.color} 15%, transparent)` }}
         >
-          {ROUNDS.find((r) => r.key === activeRound)?.label}
-        </h2>
-        <span className="text-xs" style={{ color: 'var(--text-mute)' }}>
-          {roundMatches.length} partido{roundMatches.length !== 1 ? 's' : ''}
-        </span>
+          <span className="text-2xl font-black leading-none" style={{ color: round.color }}>
+            {roundMatches.length || round.matchCount}
+          </span>
+          <span className="text-[10px] font-semibold" style={{ color: round.color, opacity: 0.7 }}>
+            partidos
+          </span>
+        </div>
       </div>
 
-      {/* Matches */}
+      {/* Match list */}
       <div className="flex flex-col gap-2.5">
-        {roundMatches.map((m) => (
-          <MatchRow
-            key={m.id}
-            id={m.id}
-            home={m.homeTeamCode}
-            away={m.awayTeamCode}
-            date={m.date}
-            venue={m.venue}
-          />
-        ))}
+        {roundMatches.length > 0 ? (
+          roundMatches.map((m) => (
+            <MatchRow
+              key={m.id}
+              id={m.id}
+              home={m.homeTeamCode}
+              away={m.awayTeamCode}
+              date={m.date}
+              venue={m.venue}
+              roundColor={round.color}
+            />
+          ))
+        ) : (
+          <div
+            className="rounded-2xl px-4 py-10 flex flex-col items-center gap-2"
+            style={{ background: round.bg, border: `1px solid ${round.border}` }}
+          >
+            <span className="text-3xl">🔒</span>
+            <p className="text-sm font-semibold" style={{ color: round.color }}>
+              Cruces por definir
+            </p>
+            <p className="text-xs text-center" style={{ color: 'var(--text-mute)' }}>
+              Se definen al finalizar la fase de grupos el 2 de julio
+            </p>
+          </div>
+        )}
       </div>
 
-      {/* Info note */}
+      {/* Final venue note */}
       {(isFinal || isTercero) && (
         <div
-          className="rounded-xl px-4 py-3"
+          className="rounded-xl px-4 py-3 flex items-center gap-2"
           style={{
             background: isFinal ? 'rgba(255,215,0,0.05)' : 'rgba(19,24,41,0.5)',
-            border: isFinal
-              ? '1px solid rgba(255,215,0,0.15)'
-              : '1px solid rgba(255,255,255,0.06)',
+            border: isFinal ? '1px solid rgba(255,215,0,0.15)' : '1px solid rgba(255,255,255,0.06)',
           }}
         >
+          <MapPin size={12} style={{ color: isFinal ? '#FFD700' : 'var(--text-mute)', flexShrink: 0 }} />
           <p className="text-xs" style={{ color: isFinal ? '#FFD700' : 'var(--text-dim)' }}>
             {isFinal
               ? 'MetLife Stadium, East Rutherford NJ · 19 de julio de 2026'
