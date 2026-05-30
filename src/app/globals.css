@@ -393,8 +393,8 @@ html.light .glass-card {
 
 /* ───────────────────────── LOGO (TopBar) ───────────────────────── */
 .wc-logo { display: flex; align-items: center; gap: 9px; }
-.wc-logo-ball { width: 28px; height: 28px; display: grid; place-items: center; }
-.wc-logo-ball svg { display: block; animation: wc-logo-pop 0.8s cubic-bezier(0.3,1.4,0.5,1) both; }
+.wc-logo-ball { width: 26px; height: 49px; display: grid; place-items: center; }
+.wc-logo-ball img { display: block; animation: wc-logo-pop 0.8s cubic-bezier(0.3,1.4,0.5,1) both; }
 .wc-logo-text {
   font-family: var(--font-display), 'Anton', system-ui, sans-serif;
   font-weight: 400;
@@ -508,8 +508,7 @@ html.light .glass-card {
 .splash-stack { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; }
 .splash-hero { display: flex; align-items: center; justify-content: center; gap: 20px; }
 .splash-trophy { position: relative; flex: none; filter: drop-shadow(0 12px 26px rgba(232,168,62,0.4)); }
-.splash-trophy svg {
-  display: block; position: relative; z-index: 1;
+.splash-trophy-img {
   transform: translateY(-140px) scale(0.7) rotate(-8deg); opacity: 0;
   animation: cup-drop 1.05s cubic-bezier(0.3,1.4,0.5,1) 0.2s forwards;
 }
@@ -581,7 +580,7 @@ html.light .glass-card {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .splash-word > span, .splash-2026, .splash-trophy svg, .t-glow,
-  .splash-sub, .splash-load, .wc-logo-ball svg, .wc-logo-text { animation: none; opacity: 1; transform: none; }
+  .splash-word > span, .splash-2026, .splash-trophy-img, .t-glow,
+  .splash-sub, .splash-load, .wc-logo-ball img, .wc-logo-text { animation: none; opacity: 1; transform: none; }
   .splash-beams { animation: none; opacity: 1; }
 }

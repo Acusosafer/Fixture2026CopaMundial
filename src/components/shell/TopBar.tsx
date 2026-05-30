@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Moon, Sun } from 'lucide-react';
 import { usePreferences } from '@/store/preferences';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
@@ -33,13 +34,19 @@ export function TopBar() {
       className="fixed top-0 left-0 right-0 z-50 h-14 flex items-center justify-between px-4 glass-nav"
       style={{ borderBottom: '1px solid var(--border-color)' }}
     >
-      <Link href="/" className="flex items-center gap-2">
-        <span className="text-xl leading-none">⚽</span>
-        <span
-          className="font-heading text-xl tracking-wide"
-          style={{ color: 'var(--text)' }}
-        >
-          MUNDIAL <span style={{ color: 'var(--accent)' }}>2026</span>
+      <Link href="/" className="wc-logo" aria-label="World Cup 2026">
+        <span className="wc-logo-ball">
+          <Image
+            src="/trophy.png"
+            alt="Copa del Mundo"
+            width={26}
+            height={49}
+            priority
+            style={{ objectFit: 'contain' }}
+          />
+        </span>
+        <span className="wc-logo-text">
+          WORLD CUP <span className="wc-logo-year">2026</span>
         </span>
       </Link>
 
