@@ -8,7 +8,7 @@ interface MatchDetailResponse {
   error?: string;
 }
 
-export function useMatchDetail(matchId: number, isLiveOrFinished: boolean) {
+export function useMatchDetail(matchId: number, isLive: boolean, isFinished: boolean) {
   const query = useQuery<MatchDetailResponse, Error>({
     queryKey: ['match-detail', matchId],
     queryFn: async () => {
@@ -16,9 +16,10 @@ export function useMatchDetail(matchId: number, isLiveOrFinished: boolean) {
       if (!res.ok) return { data: null };
       return res.json() as Promise<MatchDetailResponse>;
     },
-    enabled: isLiveOrFinished,
-    staleTime: 25_000,
-    refetchInterval: isLiveOrFinished ? 60_000 : false,
+    enabled: isLive || isFinished,
+    staleTime: isLive ? 20_000 : 60_000 * 60,
+    refetchInterval: isLive ? 30_000 : false,
+    refetchOnWindowFocus: isLive,
     retry: false,
   });
 

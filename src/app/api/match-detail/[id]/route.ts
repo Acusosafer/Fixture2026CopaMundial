@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { cached } from '@/lib/cache/kv';
 import { TTL } from '@/lib/cache/ttls';
+import { getESPNMatchDetail } from '@/lib/api/espn';
 import { getMatchDetail } from '@/lib/api/football-data';
 import { staticMatches } from '@/lib/fixtures-static';
 import type { MatchDetail } from '@/lib/live';
@@ -97,8 +97,9 @@ export async function GET(_req: Request, { params }: RouteParams): Promise<Respo
     return NextResponse.json({ data: getMockDetail(staticMatchId), mock: true });
   }
 
-  // Solo buscar en la API si el partido ya comenzó
-  if (match.status === 'scheduled') {
+  // Solo buscar en la API si el partido ya comenzó (por tiempo, no por status estático)
+  const matchStarted = new Date() >= new Date(match.date);
+  if (!matchStarted) {
     return NextResponse.json({ data: null, reason: 'not_started' });
   }
 
@@ -106,15 +107,28 @@ export async function GET(_req: Request, { params }: RouteParams): Promise<Respo
     const isFinished = match.status === 'finished';
     const ttl = isFinished ? TTL.MATCH_FINISHED : TTL.MATCH_LIVE;
 
-    const result = await cached<MatchDetail>(
-      `match-detail:${staticMatchId}`,
-      ttl,
-      () => getMatchDetail(staticMatchId)
-    );
+    // Intentar ESPN primero (no requiere key, tiene datos live reales)
+    try {
+      const detail = await getESPNMatchDetail(staticMatchId);
+      console.log(`[detail] espn ok: ${detail.events.length} events`);
+      const res = NextResponse.json({ data: detail });
+      // No cachear en edge mientras el partido está en vivo — cada request va al origen
+      if (isFinished) {
+        res.headers.set('Cache-Control', `s-maxage=${ttl}, stale-while-revalidate=${ttl * 2}`);
+      } else {
+        res.headers.set('Cache-Control', 'no-store');
+      }
+      return res;
+    } catch (espnErr) {
+      console.error('[detail] espn failed:', espnErr instanceof Error ? espnErr.message : espnErr);
+    }
 
-    return NextResponse.json({ data: result.data, cached: result.cached });
+    // Fallback: football-data.org
+    const detail = await getMatchDetail(staticMatchId);
+    return NextResponse.json({ data: detail });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[detail] all sources failed:', message);
     return NextResponse.json({ data: null, error: message }, { status: 200 });
   }
 }

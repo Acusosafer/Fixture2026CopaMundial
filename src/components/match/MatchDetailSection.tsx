@@ -40,7 +40,7 @@ export function MatchDetailSection({
   const isFinished = live?.status === 'FINISHED' || staticStatus === 'finished';
   const showDetail = isLive || isFinished;
 
-  const { detail, isLoading: loadingDetail } = useMatchDetail(matchId, showDetail);
+  const { detail, isLoading: loadingDetail } = useMatchDetail(matchId, isLive, isFinished);
   const { h2h, isLoading: loadingH2H }       = useH2H(matchId);
 
   // Partido aún no empezó — solo mostrar H2H
