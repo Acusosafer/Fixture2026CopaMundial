@@ -1,11 +1,9 @@
 'use client';
 
-import { Bell, BellOff, Sun, Moon, Globe, Info, Star, ChevronRight, Megaphone } from 'lucide-react';
+import { Bell, BellOff, Sun, Moon, Globe, Info, Star, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
 import { usePreferences } from '@/store/preferences';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
-import { sendMundialStartNotification } from '@/app/actions/push';
 
 // ── Section wrapper ───────────────────────────────────────────────────────────
 
@@ -92,22 +90,8 @@ function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
 export default function AjustesPage() {
   const { theme, toggleTheme } = usePreferences();
   const { isSupported, isSubscribed, isLoading, permission, subscribe, unsubscribe } = usePushNotifications();
-  const [broadcasting, setBroadcasting] = useState(false);
-  const [broadcastResult, setBroadcastResult] = useState<string | null>(null);
 
   const isDark = theme === 'dark';
-
-  async function handleBroadcast() {
-    setBroadcasting(true);
-    setBroadcastResult(null);
-    const result = await sendMundialStartNotification();
-    setBroadcasting(false);
-    if (result.ok) {
-      setBroadcastResult(`✓ Enviado a ${result.sent} suscriptor${result.sent === 1 ? '' : 'es'}${result.failed ? ` (${result.failed} fallaron)` : ''}`);
-    } else {
-      setBroadcastResult(`✗ Error: ${result.error}`);
-    }
-  }
 
   return (
     <div className="flex flex-col gap-6 px-4 pb-6">
@@ -189,36 +173,6 @@ export default function AjustesPage() {
           description="v1.0.0 · Desarrollado por FAS Analytics"
           iconColor="var(--accent)"
         />
-      </Section>
-
-      {/* Admin — Difusión */}
-      <Section title="Admin">
-        <div className="px-4 py-3 flex flex-col gap-3">
-          <p className="text-xs" style={{ color: 'var(--text-dim)' }}>
-            Enviar notificación push a todos los suscriptores
-          </p>
-          <div
-            className="rounded-xl px-3 py-2.5 text-xs"
-            style={{ background: 'var(--border-subtle)', color: 'var(--text-mute)', border: '1px solid rgba(255,255,255,0.06)' }}
-          >
-            <span className="font-bold" style={{ color: 'var(--text-dim)' }}>🏆 ¡HOY EMPIEZA EL MUNDIAL!</span>
-            <br />México vs Sudáfrica · 16:00 ART
-          </div>
-          <button
-            onClick={handleBroadcast}
-            disabled={broadcasting}
-            className="flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-bold transition-all active:scale-[0.98] disabled:opacity-50"
-            style={{ background: 'var(--accent)', color: 'var(--accent-fg)' }}
-          >
-            <Megaphone size={16} />
-            {broadcasting ? 'Enviando...' : 'Difundir ahora'}
-          </button>
-          {broadcastResult && (
-            <p className="text-xs text-center font-semibold" style={{ color: broadcastResult.startsWith('✓') ? '#10F0A0' : 'var(--live)' }}>
-              {broadcastResult}
-            </p>
-          )}
-        </div>
       </Section>
 
       {/* Datos */}

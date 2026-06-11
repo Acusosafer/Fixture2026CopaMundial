@@ -32,12 +32,29 @@ export function usePushNotifications() {
       setPermission('unsupported');
       return;
     }
-    setPermission(Notification.permission as PushPermission);
+    const perm = Notification.permission as PushPermission;
+    setPermission(perm);
 
-    // Check if already subscribed
     navigator.serviceWorker.ready.then((reg) => {
-      reg.pushManager.getSubscription().then((sub) => {
-        setIsSubscribed(!!sub);
+      reg.pushManager.getSubscription().then(async (sub) => {
+        if (sub) {
+          setIsSubscribed(true);
+          // Si el permiso está dado y hay suscripción en el navegador,
+          // re-registrar silenciosamente en el servidor (por si se perdió)
+          if (perm === 'granted') {
+            try {
+              await fetch('/api/push/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(sub),
+              });
+            } catch {
+              // silencioso — no afecta la UX
+            }
+          }
+        } else {
+          setIsSubscribed(false);
+        }
       });
     });
   }, [isSupported]);
