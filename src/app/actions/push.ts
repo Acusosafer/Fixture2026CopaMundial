@@ -38,6 +38,16 @@ export async function sendSecondHalfNotification(matchTitle: string, matchId: nu
   });
 }
 
+export async function sendCustomNotification(title: string, body: string, url?: string): Promise<BroadcastResult> {
+  if (!title.trim() || !body.trim()) return { ok: false, error: 'Título y mensaje son requeridos' };
+  return broadcast({
+    title: title.trim(),
+    body: body.trim(),
+    tag: `custom-${Date.now()}`,
+    data: { url: url ?? '/' },
+  });
+}
+
 export async function sendMundialStartNotification(): Promise<BroadcastResult> {
   return broadcast({
     title: '🏆 ¡HOY EMPIEZA EL MUNDIAL!',
