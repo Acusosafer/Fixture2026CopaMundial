@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import webpush from 'web-push';
-import { kv } from '@vercel/kv';
+import { getAllSubs } from '@/lib/push-store';
 
 webpush.setVapidDetails(
   'mailto:fernandoacusosa10@gmail.com',
@@ -15,10 +15,6 @@ export interface PushPayload {
   data?: Record<string, string>;
 }
 
-// POST /api/push/send — enviar push a todos los suscriptores
-// Body: { title, body, tag?, data? }
-// Solo accesible con secret interno (x-push-secret header)
-
 export async function POST(request: Request): Promise<Response> {
   const secret = request.headers.get('x-push-secret');
   if (secret !== process.env.PUSH_INTERNAL_SECRET) {
@@ -30,23 +26,14 @@ export async function POST(request: Request): Promise<Response> {
     return NextResponse.json({ error: 'title and body required' }, { status: 400 });
   }
 
-  // Obtener todas las suscripciones guardadas en KV
-  const keys = await kv.keys('push:sub:*');
-  if (keys.length === 0) {
-    return NextResponse.json({ sent: 0 });
-  }
+  const subs = await getAllSubs();
+  if (subs.length === 0) return NextResponse.json({ sent: 0 });
 
   const results = await Promise.allSettled(
-    keys.map(async (key) => {
-      const raw = await kv.get<string>(key);
-      if (!raw) return;
-
-      const sub = typeof raw === 'string' ? JSON.parse(raw) : raw;
-      await webpush.sendNotification(sub, JSON.stringify(payload));
-    })
+    subs.map((sub) => webpush.sendNotification(sub as Parameters<typeof webpush.sendNotification>[0], JSON.stringify(payload)))
   );
 
-  const sent = results.filter((r) => r.status === 'fulfilled').length;
+  const sent   = results.filter((r) => r.status === 'fulfilled').length;
   const failed = results.length - sent;
 
   return NextResponse.json({ sent, failed });

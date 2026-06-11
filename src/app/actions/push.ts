@@ -1,6 +1,7 @@
 'use server';
 
 import webpush from 'web-push';
+import { getAllSubs } from '@/lib/push-store';
 
 export interface BroadcastResult {
   ok: boolean;
@@ -9,18 +10,7 @@ export interface BroadcastResult {
   error?: string;
 }
 
-function kvAvailable() {
-  return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
-}
-
 export async function sendMundialStartNotification(): Promise<BroadcastResult> {
-  if (!kvAvailable()) {
-    return {
-      ok: false,
-      error: 'Vercel KV no configurado. Andá a vercel.com → tu proyecto → Storage → Create KV Database y vinculala al proyecto.',
-    };
-  }
-
   const publicKey  = process.env.VAPID_PUBLIC_KEY;
   const privateKey = process.env.VAPID_PRIVATE_KEY;
 
@@ -28,11 +18,7 @@ export async function sendMundialStartNotification(): Promise<BroadcastResult> {
     return { ok: false, error: 'VAPID keys no configuradas en Vercel' };
   }
 
-  webpush.setVapidDetails(
-    'mailto:fernandoacusosa10@gmail.com',
-    publicKey,
-    privateKey,
-  );
+  webpush.setVapidDetails('mailto:fernandoacusosa10@gmail.com', publicKey, privateKey);
 
   const payload = JSON.stringify({
     title: '🏆 ¡HOY EMPIEZA EL MUNDIAL!',
@@ -42,20 +28,16 @@ export async function sendMundialStartNotification(): Promise<BroadcastResult> {
   });
 
   try {
-    const { kv } = await import('@vercel/kv');
-    const keys = await kv.keys('push:sub:*');
+    const subs = await getAllSubs();
 
-    if (keys.length === 0) {
+    if (subs.length === 0) {
       return { ok: true, sent: 0, failed: 0 };
     }
 
     const results = await Promise.allSettled(
-      keys.map(async (key) => {
-        const raw = await kv.get<string>(key);
-        if (!raw) return;
-        const sub = typeof raw === 'string' ? JSON.parse(raw) : raw;
-        await webpush.sendNotification(sub, payload);
-      })
+      subs.map((sub) =>
+        webpush.sendNotification(sub as Parameters<typeof webpush.sendNotification>[0], payload)
+      )
     );
 
     const sent   = results.filter((r) => r.status === 'fulfilled').length;
