@@ -11,6 +11,7 @@ import { FlagBackground } from '@/components/team/FlagBackground';
 import { WeatherChip } from '@/components/weather/WeatherChip';
 import { CountdownHero } from '@/components/match/CountdownHero';
 import { NextMatchCard } from '@/components/match/NextMatchCard';
+import { LiveMatchSection } from '@/components/home/LiveMatchSection';
 
 const ARGENTINA = getTeamByCode('AR')!;
 const TOURNAMENT_START = new Date('2026-06-12T21:00:00Z'); // apertura MX vs ZA
@@ -262,6 +263,9 @@ export default function HomePage() {
           </Link>
         </motion.div>
       )}
+
+      {/* â”€â”€ Live matches â”€â”€ */}
+      <LiveMatchSection />
 
       {/* â”€â”€ Change team CTA â”€â”€ */}
       <motion.div
