@@ -60,23 +60,23 @@ export function ScenarioSimulator({
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={spring}
-            className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[28px] px-5 pb-10 pt-3"
+            className="fixed left-0 right-0 z-50 rounded-t-[28px] px-5 pt-3 flex flex-col"
             style={{
+              bottom: 'calc(4rem + env(safe-area-inset-bottom))',
               background: 'var(--bg-card)',
               backdropFilter: 'blur(24px) saturate(180%)',
               border: '1px solid rgba(255,255,255,0.10)',
               borderBottom: 'none',
-              maxHeight: '82vh',
-              overflowY: 'auto',
+              maxHeight: '74vh',
             }}
           >
             {/* Handle */}
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-center mb-4 flex-shrink-0">
               <div className="rounded-full w-10 h-1" style={{ background: 'var(--border-color)' }} />
             </div>
 
             {/* Título + reset */}
-            <div className="flex items-start justify-between mb-5">
+            <div className="flex items-start justify-between mb-5 flex-shrink-0">
               <div>
                 <h2 className="font-heading text-xl tracking-wide" style={{ color: 'var(--text)' }}>
                   ¿QUÉ PASA SI...?
@@ -100,75 +100,92 @@ export function ScenarioSimulator({
               )}
             </div>
 
-            {pendingMatches.length === 0 ? (
-              <p className="text-sm text-center py-10" style={{ color: 'var(--text-mute)' }}>
-                Todos los partidos del grupo han sido jugados.
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {pendingMatches.map((match) => {
-                  const home = getTeamByCode(match.homeTeamCode);
-                  const away = getTeamByCode(match.awayTeamCode);
-                  const selected = simulated[match.id] ?? null;
+            {/* Contenido scrolleable */}
+            <div className="flex-1 overflow-y-auto pb-4">
+              {pendingMatches.length === 0 ? (
+                <p className="text-sm text-center py-10" style={{ color: 'var(--text-mute)' }}>
+                  Todos los partidos del grupo han sido jugados.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {pendingMatches.map((match) => {
+                    const home = getTeamByCode(match.homeTeamCode);
+                    const away = getTeamByCode(match.awayTeamCode);
+                    const selected = simulated[match.id] ?? null;
 
-                  return (
-                    <div
-                      key={match.id}
-                      className="rounded-2xl p-3.5"
-                      style={{
-                        background: selected
-                          ? 'var(--plasma-dim, rgba(99,102,241,0.12))'
-                          : 'var(--border-subtle)',
-                        border: `1px solid ${selected ? 'var(--plasma, #6366f1)' : 'rgba(255,255,255,0.06)'}`,
-                        transition: 'background 0.2s, border-color 0.2s',
-                      }}
-                    >
-                      {/* Equipos */}
-                      <div className="flex items-center justify-between mb-3 gap-2">
-                        <span
-                          className="text-xs font-semibold flex-1 truncate"
-                          style={{ color: selected === 'home' ? 'var(--plasma, #6366f1)' : 'var(--text)' }}
-                        >
-                          {home?.nameEs ?? match.homeTeamCode}
-                        </span>
-                        <span className="text-[10px] flex-shrink-0 font-medium" style={{ color: 'var(--text-mute)' }}>
-                          vs
-                        </span>
-                        <span
-                          className="text-xs font-semibold flex-1 truncate text-right"
-                          style={{ color: selected === 'away' ? 'var(--plasma, #6366f1)' : 'var(--text)' }}
-                        >
-                          {away?.nameEs ?? match.awayTeamCode}
-                        </span>
-                      </div>
+                    return (
+                      <div
+                        key={match.id}
+                        className="rounded-2xl p-3.5"
+                        style={{
+                          background: selected
+                            ? 'var(--plasma-dim, rgba(99,102,241,0.12))'
+                            : 'var(--border-subtle)',
+                          border: `1px solid ${selected ? 'var(--plasma, #6366f1)' : 'rgba(255,255,255,0.06)'}`,
+                          transition: 'background 0.2s, border-color 0.2s',
+                        }}
+                      >
+                        {/* Equipos */}
+                        <div className="flex items-center justify-between mb-3 gap-2">
+                          <span
+                            className="text-xs font-semibold flex-1 truncate"
+                            style={{ color: selected === 'home' ? 'var(--plasma, #6366f1)' : 'var(--text)' }}
+                          >
+                            {home?.nameEs ?? match.homeTeamCode}
+                          </span>
+                          <span className="text-[10px] flex-shrink-0 font-medium" style={{ color: 'var(--text-mute)' }}>
+                            vs
+                          </span>
+                          <span
+                            className="text-xs font-semibold flex-1 truncate text-right"
+                            style={{ color: selected === 'away' ? 'var(--plasma, #6366f1)' : 'var(--text)' }}
+                          >
+                            {away?.nameEs ?? match.awayTeamCode}
+                          </span>
+                        </div>
 
-                      {/* Botones de resultado */}
-                      <div className="grid grid-cols-3 gap-1.5">
-                        {RESULT_OPTS.map(({ key, label }) => {
-                          const isActive = selected === key;
-                          return (
-                            <button
-                              key={key}
-                              onClick={() => onChange(match.id, key)}
-                              className="py-2 rounded-xl text-xs font-semibold transition-all active:scale-95"
-                              style={{
-                                background: isActive
-                                  ? 'var(--plasma, #6366f1)'
-                                  : 'var(--bg-card)',
-                                border: `1px solid ${isActive ? 'var(--plasma, #6366f1)' : 'rgba(255,255,255,0.06)'}`,
-                                color: isActive ? '#fff' : 'var(--text-mute)',
-                              }}
-                            >
-                              {label}
-                            </button>
-                          );
-                        })}
+                        {/* Botones de resultado */}
+                        <div className="grid grid-cols-3 gap-1.5">
+                          {RESULT_OPTS.map(({ key, label }) => {
+                            const isActive = selected === key;
+                            return (
+                              <button
+                                key={key}
+                                onClick={() => onChange(match.id, key)}
+                                className="py-2 rounded-xl text-xs font-semibold transition-all active:scale-95"
+                                style={{
+                                  background: isActive
+                                    ? 'var(--plasma, #6366f1)'
+                                    : 'var(--bg-card)',
+                                  border: `1px solid ${isActive ? 'var(--plasma, #6366f1)' : 'rgba(255,255,255,0.06)'}`,
+                                  color: isActive ? '#fff' : 'var(--text-mute)',
+                                }}
+                              >
+                                {label}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Botón Confirmar — siempre visible */}
+            <div className="flex-shrink-0 py-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+              <button
+                onClick={onClose}
+                className="w-full py-3.5 rounded-2xl text-sm font-bold transition-all active:scale-[0.98]"
+                style={{
+                  background: 'var(--accent)',
+                  color: 'var(--accent-fg)',
+                }}
+              >
+                {hasSimulated ? 'Ver resultado ✓' : 'Cerrar'}
+              </button>
+            </div>
           </motion.div>
         </>
       )}

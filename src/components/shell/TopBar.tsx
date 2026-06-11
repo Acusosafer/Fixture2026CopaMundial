@@ -5,6 +5,29 @@ import Image from 'next/image';
 import { Moon, Sun } from 'lucide-react';
 import { usePreferences } from '@/store/preferences';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
+import { getTeamByCode } from '@/lib/teams';
+
+function TeamChip({ teamCode }: { teamCode: string }) {
+  const team = getTeamByCode(teamCode);
+  return (
+    <Link
+      href="/seleccion"
+      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all active:scale-95"
+      style={{
+        background: 'var(--accent-dim)',
+        border: '1px solid var(--accent-border)',
+        color: 'var(--accent)',
+      }}
+    >
+      {team?.flagUrl ? (
+        <div className="relative overflow-hidden rounded-sm flex-shrink-0" style={{ width: 20, height: 14 }}>
+          <Image src={team.flagUrl} alt={team.nameEs} fill className="object-cover" unoptimized />
+        </div>
+      ) : null}
+      <span className="max-w-[72px] truncate">{team?.nameEs ?? 'Mi Selección'}</span>
+    </Link>
+  );
+}
 
 function PushIconButton() {
   const { isSupported, permission, isSubscribed, isLoading, subscribe, unsubscribe } =
@@ -27,7 +50,7 @@ function PushIconButton() {
 }
 
 export function TopBar() {
-  const { theme, toggleTheme } = usePreferences();
+  const { theme, toggleTheme, myTeamCode } = usePreferences();
 
   return (
     <header
@@ -65,17 +88,7 @@ export function TopBar() {
           }
         </button>
 
-        <Link
-          href="/seleccion"
-          className="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
-          style={{
-            background: 'var(--accent-dim)',
-            color: 'var(--accent)',
-            border: '1px solid var(--accent-border)',
-          }}
-        >
-          Mi Selección
-        </Link>
+        <TeamChip teamCode={myTeamCode} />
       </div>
     </header>
   );
