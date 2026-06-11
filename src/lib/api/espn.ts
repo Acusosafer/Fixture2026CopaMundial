@@ -60,11 +60,12 @@ function mapESPNStatus(state: string, completed: boolean, typeName?: string, des
 }
 
 function parseESPNClock(clock: number, displayClock: string, period: number): number {
-  // clock = elapsed seconds from match start
-  if (clock > 0) return Math.floor(clock / 60);
-  // fallback: displayClock is "mm:ss" or "mm'"
+  // clock = elapsed seconds within current period (resets each half)
+  const base = period >= 2 ? 45 * (period - 1) : 0;
+  if (clock > 0) return base + Math.floor(clock / 60);
+  // fallback: displayClock is "mm:ss" elapsed in current period
   const m = parseInt(displayClock?.split(':')[0] ?? displayClock?.replace("'", '') ?? '0', 10);
-  return period === 2 ? 45 + (m || 0) : m || 0;
+  return base + (m || 0);
 }
 
 // Parse "9'" → 9, "45+2'" → 45, "67:34" → 67

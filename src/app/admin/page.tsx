@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Megaphone, Lock } from 'lucide-react';
-import { sendMundialStartNotification } from '@/app/actions/push';
+import { sendMundialStartNotification, sendSecondHalfNotification } from '@/app/actions/push';
 
 const ADMIN_PIN = process.env.NEXT_PUBLIC_ADMIN_PIN ?? 'fas2026';
 
@@ -12,6 +12,8 @@ export default function AdminPage() {
   const [pinError, setPinError] = useState(false);
   const [broadcasting, setBroadcasting] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [broadcasting2, setBroadcasting2] = useState(false);
+  const [result2, setResult2] = useState<string | null>(null);
 
   function handleUnlock() {
     if (pin === ADMIN_PIN) {
@@ -22,16 +24,24 @@ export default function AdminPage() {
     }
   }
 
+  function fmtResult(r: Awaited<ReturnType<typeof sendMundialStartNotification>>) {
+    return r.ok
+      ? `✓ Enviado a ${r.sent} suscriptor${r.sent === 1 ? '' : 'es'}${r.failed ? ` (${r.failed} fallaron)` : ''}`
+      : `✗ ${r.error}`;
+  }
+
   async function handleBroadcast() {
     setBroadcasting(true);
     setResult(null);
-    const r = await sendMundialStartNotification();
+    setResult(fmtResult(await sendMundialStartNotification()));
     setBroadcasting(false);
-    if (r.ok) {
-      setResult(`✓ Enviado a ${r.sent} suscriptor${r.sent === 1 ? '' : 'es'}${r.failed ? ` (${r.failed} fallaron)` : ''}`);
-    } else {
-      setResult(`✗ ${r.error}`);
-    }
+  }
+
+  async function handleSecondHalf() {
+    setBroadcasting2(true);
+    setResult2(null);
+    setResult2(fmtResult(await sendSecondHalfNotification('México vs Sudáfrica · 2do tiempo en curso', 1)));
+    setBroadcasting2(false);
   }
 
   if (!unlocked) {
@@ -105,6 +115,39 @@ export default function AdminPage() {
         {result && (
           <p className="text-xs text-center font-semibold" style={{ color: result.startsWith('✓') ? '#10F0A0' : 'var(--live)' }}>
             {result}
+          </p>
+        )}
+      </div>
+
+      {/* 2do tiempo */}
+      <div
+        className="rounded-2xl p-4 flex flex-col gap-4"
+        style={{ background: 'var(--bg-card)', border: '1px solid rgba(239,68,68,0.3)' }}
+      >
+        <p className="text-sm font-semibold" style={{ color: 'var(--text-dim)' }}>
+          Alerta 2do tiempo
+        </p>
+        <div
+          className="rounded-xl px-3 py-3 text-xs"
+          style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: 'var(--text-mute)' }}
+        >
+          <span className="font-bold block mb-0.5" style={{ color: 'var(--live)' }}>
+            ⚽ ¡Comienza el 2do tiempo!
+          </span>
+          México vs Sudáfrica · 2do tiempo en curso
+        </div>
+        <button
+          onClick={handleSecondHalf}
+          disabled={broadcasting2}
+          className="flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold transition-all active:scale-[0.98] disabled:opacity-50"
+          style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid var(--live)', color: 'var(--live)' }}
+        >
+          <Megaphone size={16} />
+          {broadcasting2 ? 'Enviando...' : 'Difundir a todos'}
+        </button>
+        {result2 && (
+          <p className="text-xs text-center font-semibold" style={{ color: result2.startsWith('✓') ? '#10F0A0' : 'var(--live)' }}>
+            {result2}
           </p>
         )}
       </div>
