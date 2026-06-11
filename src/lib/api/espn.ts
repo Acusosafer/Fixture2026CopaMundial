@@ -188,8 +188,18 @@ export async function getESPNMatchDetail(staticMatchId: number): Promise<MatchDe
   const events: MatchEvent[] = [];
 
   for (const ke of summary.keyEvents ?? []) {
-    const eventType = mapKeyEventType(ke.type.type);
-    if (!eventType) continue;
+    let eventType = mapKeyEventType(ke.type.type);
+
+    // Fallback: ESPN marks goals with scoringPlay=true even when type.type differs
+    if (!eventType && ke.scoringPlay) {
+      eventType = ke.type.type === 'penalty-scored' ? 'PENALTY' : 'GOAL';
+    }
+
+    if (!eventType) {
+      // Log unknown types so we can catch future gaps
+      console.log(`[espn] unknown keyEvent type: "${ke.type.type}" (scoringPlay=${ke.scoringPlay}) text="${ke.type.text}"`);
+      continue;
+    }
 
     const minute = parseDisplayMinute(ke.clock?.displayValue ?? '');
     const isHome = ke.team?.id === homeId;
