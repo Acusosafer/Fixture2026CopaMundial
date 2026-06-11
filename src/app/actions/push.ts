@@ -1,7 +1,6 @@
 'use server';
 
 import webpush from 'web-push';
-import { kv } from '@vercel/kv';
 
 export interface BroadcastResult {
   ok: boolean;
@@ -10,7 +9,18 @@ export interface BroadcastResult {
   error?: string;
 }
 
+function kvAvailable() {
+  return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+}
+
 export async function sendMundialStartNotification(): Promise<BroadcastResult> {
+  if (!kvAvailable()) {
+    return {
+      ok: false,
+      error: 'Vercel KV no configurado. Andá a vercel.com → tu proyecto → Storage → Create KV Database y vinculala al proyecto.',
+    };
+  }
+
   const publicKey  = process.env.VAPID_PUBLIC_KEY;
   const privateKey = process.env.VAPID_PRIVATE_KEY;
 
@@ -32,6 +42,7 @@ export async function sendMundialStartNotification(): Promise<BroadcastResult> {
   });
 
   try {
+    const { kv } = await import('@vercel/kv');
     const keys = await kv.keys('push:sub:*');
 
     if (keys.length === 0) {
