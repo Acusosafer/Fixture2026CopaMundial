@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useMySelection } from '@/hooks/useMySelection';
+import { useLiveScores } from '@/hooks/useLiveScores';
 import { getTeamByCode, type Team } from '@/lib/teams';
 import { getNextMatchForTeam, staticMatches } from '@/lib/fixtures-static';
 import { FlagBackground } from '@/components/team/FlagBackground';
@@ -68,6 +69,7 @@ const TBD_TEAM: Team = {
 
 function UpcomingMatchesSection({ reduceMotion }: { reduceMotion: boolean }) {
   const now = new Date();
+  const { scores: liveScores } = useLiveScores();
 
   // Show today's group-stage matches; if none, show the next 4 upcoming
   const todayART = new Date(now.getTime() + ART_OFFSET_MS);
@@ -113,6 +115,12 @@ function UpcomingMatchesSection({ reduceMotion }: { reduceMotion: boolean }) {
             const home = getTeamByCode(m.homeTeamCode);
             const away = getTeamByCode(m.awayTeamCode);
             if (!home || !away) return null;
+            const live       = liveScores.get(m.id);
+            const isLive     = live?.status === 'IN_PLAY' || live?.status === 'PAUSED';
+            const isFinished = live?.status === 'FINISHED' || m.status === 'finished';
+            const homeScore  = live?.homeScore ?? m.homeScore;
+            const awayScore  = live?.awayScore ?? m.awayScore;
+
             return (
               <Link
                 key={m.id}
@@ -128,9 +136,29 @@ function UpcomingMatchesSection({ reduceMotion }: { reduceMotion: boolean }) {
                     {home.nameEs}
                   </span>
                 </div>
-                <span className="text-[10px] font-bold shrink-0 px-1.5 py-0.5 rounded" style={{ background: 'var(--border-color)', color: 'var(--text-dim)' }}>
-                  {formatShortDate(m.date)}
-                </span>
+
+                {isLive ? (
+                  <div className="flex flex-col items-center shrink-0 gap-0.5">
+                    <div className="flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full animate-pulse-live" style={{ background: 'var(--live)' }} />
+                      <span className="text-xs font-bold tabular-nums" style={{ color: 'var(--live)' }}>
+                        {homeScore ?? 0} – {awayScore ?? 0}
+                      </span>
+                    </div>
+                    <span className="text-[9px]" style={{ color: 'var(--live)' }}>
+                      {live?.status === 'PAUSED' ? 'ET' : `${live?.minute ?? 0}'`}
+                    </span>
+                  </div>
+                ) : isFinished && homeScore !== null ? (
+                  <span className="text-xs font-bold tabular-nums shrink-0 px-1.5 py-0.5 rounded" style={{ background: 'var(--border-color)', color: 'var(--accent)' }}>
+                    {homeScore} – {awayScore}
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold shrink-0 px-1.5 py-0.5 rounded" style={{ background: 'var(--border-color)', color: 'var(--text-dim)' }}>
+                    {formatShortDate(m.date)}
+                  </span>
+                )}
+
                 <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
                   <span className="text-xs font-semibold truncate text-right" style={{ color: 'var(--text)' }}>
                     {away.nameEs}
