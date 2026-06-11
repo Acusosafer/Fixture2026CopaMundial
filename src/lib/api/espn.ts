@@ -8,7 +8,7 @@ const WC_SLUGS = ['fifa.world', 'world.cup'];
 
 interface ESPNTeam { id: string; abbreviation: string; displayName: string; }
 interface ESPNCompetitor { homeAway: 'home' | 'away'; team: ESPNTeam; score: string; }
-interface ESPNStatusType { state: string; completed: boolean; }
+interface ESPNStatusType { state: string; completed: boolean; name?: string; description?: string; }
 interface ESPNStatus { type: ESPNStatusType; displayClock: string; clock: number; period: number; }
 interface ESPNEvent { id: string; status: ESPNStatus; competitions: Array<{ competitors: ESPNCompetitor[] }>; }
 
@@ -51,9 +51,10 @@ interface ESPNSummary {
 
 // ── Helpers ───────────────────────────────────────────────────
 
-function mapESPNStatus(state: string, completed: boolean): LiveScore['status'] {
+function mapESPNStatus(state: string, completed: boolean, typeName?: string, description?: string): LiveScore['status'] {
   if (completed || state === 'post') return 'FINISHED';
-  if (state === 'halftime') return 'PAUSED';
+  // ESPN uses state='in' for BOTH in-play and halftime; distinguish via type.name or description
+  if (typeName === 'STATUS_HALFTIME' || state === 'halftime' || description?.toLowerCase() === 'halftime') return 'PAUSED';
   if (state === 'in') return 'IN_PLAY';
   return 'SUSPENDED';
 }
@@ -139,7 +140,7 @@ export async function getESPNLive(): Promise<LiveScore[]> {
         const sm = staticMatches.find(m => m.homeTeamCode === homeCode && m.awayTeamCode === awayCode);
         if (!sm) continue;
 
-        const { state, completed } = ev.status.type;
+        const { state, completed, name: typeName, description } = ev.status.type;
         if (state === 'pre') continue;
 
         const minute = parseESPNClock(ev.status.clock, ev.status.displayClock, ev.status.period);
@@ -150,7 +151,7 @@ export async function getESPNLive(): Promise<LiveScore[]> {
           awayScore: parseInt(away.score, 10) || 0,
           minute,
           injuryTime: 0,
-          status: mapESPNStatus(state, completed),
+          status: mapESPNStatus(state, completed, typeName, description),
         });
       }
 
