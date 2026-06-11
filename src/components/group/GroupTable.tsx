@@ -8,6 +8,8 @@ import type { Group } from '@/lib/groups';
 import type { StaticMatch } from '@/lib/fixtures-static';
 import { ScenarioSimulator } from '@/components/group/ScenarioSimulator';
 import type { SimulatedResults, ResultOverride } from '@/components/group/ScenarioSimulator';
+import { useLiveScores } from '@/hooks/useLiveScores';
+import type { LiveScore } from '@/lib/live';
 
 const ART = -3 * 60 * 60 * 1000;
 const DAYS_SHORT   = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
@@ -45,6 +47,7 @@ function buildTable(
   group: Group,
   matches: StaticMatch[],
   simulated: SimulatedResults,
+  liveScores: Map<number, LiveScore>,
 ): TeamStats[] {
   const statsMap = new Map<string, TeamStats>();
 
@@ -62,7 +65,13 @@ function buildTable(
     let homeGoals: number | null = null;
     let awayGoals: number | null = null;
 
-    if (match.status === 'finished' && match.homeScore !== null && match.awayScore !== null) {
+    const live = liveScores.get(match.id);
+
+    // Prioridad: resultado en vivo/terminado > datos estáticos > simulación
+    if (live?.status === 'FINISHED') {
+      homeGoals = live.homeScore;
+      awayGoals = live.awayScore;
+    } else if (match.status === 'finished' && match.homeScore !== null && match.awayScore !== null) {
       homeGoals = match.homeScore;
       awayGoals = match.awayScore;
     } else if (simulated[match.id]) {
@@ -125,27 +134,33 @@ interface GroupTableProps {
 export function GroupTable({ group, matches, bestThirds }: GroupTableProps) {
   const [simulated, setSimulated]   = useState<SimulatedResults>({});
   const [simOpen, setSimOpen]       = useState(false);
+  const { scores: liveScores }      = useLiveScores();
 
   const groupMatches = useMemo(
     () => matches.filter((m) => m.group === group.name),
     [matches, group.name],
   );
 
+  // Partidos pendientes: ni terminados estáticamente ni con resultado en vivo finalizado
   const pendingMatches = useMemo(
-    () => groupMatches.filter((m) => m.status !== 'finished'),
-    [groupMatches],
+    () => groupMatches.filter((m) => {
+      if (m.status === 'finished') return false;
+      const live = liveScores.get(m.id);
+      return live?.status !== 'FINISHED';
+    }),
+    [groupMatches, liveScores],
   );
 
   // Real table (sin simulación) — usado para detectar cambios
   const realTable = useMemo(
-    () => buildTable(group, groupMatches, {}),
-    [group, groupMatches],
+    () => buildTable(group, groupMatches, {}, liveScores),
+    [group, groupMatches, liveScores],
   );
 
   // Tabla con simulación aplicada
   const table = useMemo(
-    () => buildTable(group, groupMatches, simulated),
-    [group, groupMatches, simulated],
+    () => buildTable(group, groupMatches, simulated, liveScores),
+    [group, groupMatches, simulated, liveScores],
   );
 
   // Mapa de stats reales por código de equipo (para highlight de cambios)
@@ -337,9 +352,14 @@ export function GroupTable({ group, matches, bestThirds }: GroupTableProps) {
             {groupMatches.map((m) => {
               const home = getTeamByCode(m.homeTeamCode);
               const away = getTeamByCode(m.awayTeamCode);
-              const isFinished = m.status === 'finished';
-              const isLive     = m.status === 'live';
+              const live       = liveScores.get(m.id);
+              const isFinished = m.status === 'finished' || live?.status === 'FINISHED';
+              const isLive     = live?.status === 'IN_PLAY' || live?.status === 'PAUSED';
+              const isHalfTime = live?.status === 'PAUSED';
               const simResult  = simulated[m.id];
+
+              const displayHome = live ? live.homeScore : m.homeScore;
+              const displayAway = live ? live.awayScore : m.awayScore;
 
               return (
                 <Link
@@ -359,14 +379,22 @@ export function GroupTable({ group, matches, bestThirds }: GroupTableProps) {
                     </span>
                   </div>
 
-                  <div className="flex flex-col items-center shrink-0 px-2">
-                    {isFinished && m.homeScore !== null ? (
+                  <div className="flex flex-col items-center shrink-0 px-2 gap-0.5">
+                    {isLive ? (
+                      <>
+                        <div className="flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full animate-pulse-live" style={{ background: 'var(--live)' }} />
+                          <span className="text-xs font-bold tabular-nums" style={{ color: 'var(--live)' }}>
+                            {displayHome ?? 0} – {displayAway ?? 0}
+                          </span>
+                        </div>
+                        <span className="text-[9px]" style={{ color: 'var(--live)' }}>
+                          {isHalfTime ? 'ET' : `${live?.minute ?? 0}'`}
+                        </span>
+                      </>
+                    ) : isFinished && displayHome !== null ? (
                       <span className="text-xs font-bold tabular-nums" style={{ color: 'var(--accent)' }}>
-                        {m.homeScore} – {m.awayScore}
-                      </span>
-                    ) : isLive ? (
-                      <span className="text-xs font-bold tabular-nums" style={{ color: 'var(--live)' }}>
-                        {m.homeScore ?? 0} – {m.awayScore ?? 0}
+                        {displayHome} – {displayAway}
                       </span>
                     ) : simResult ? (
                       <span className="text-xs font-bold tabular-nums" style={{ color: 'var(--plasma, #6366f1)' }}>
