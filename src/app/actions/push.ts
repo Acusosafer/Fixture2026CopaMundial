@@ -1,5 +1,8 @@
 'use server';
 
+import webpush from 'web-push';
+import { kv } from '@vercel/kv';
+
 export interface BroadcastResult {
   ok: boolean;
   sent?: number;
@@ -8,35 +11,46 @@ export interface BroadcastResult {
 }
 
 export async function sendMundialStartNotification(): Promise<BroadcastResult> {
-  const secret = process.env.PUSH_INTERNAL_SECRET;
-  if (!secret) {
-    return { ok: false, error: 'PUSH_INTERNAL_SECRET no configurado' };
+  const publicKey  = process.env.VAPID_PUBLIC_KEY;
+  const privateKey = process.env.VAPID_PRIVATE_KEY;
+
+  if (!publicKey || !privateKey) {
+    return { ok: false, error: 'VAPID keys no configuradas en Vercel' };
   }
 
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : 'http://localhost:3000';
+  webpush.setVapidDetails(
+    'mailto:fernandoacusosa10@gmail.com',
+    publicKey,
+    privateKey,
+  );
+
+  const payload = JSON.stringify({
+    title: '🏆 ¡HOY EMPIEZA EL MUNDIAL!',
+    body: 'México vs Sudáfrica · 16:00 ART · Estadio Ciudad de México',
+    tag: 'mundial-start-2026',
+    data: { url: '/partido/1' },
+  });
 
   try {
-    const res = await fetch(`${baseUrl}/api/push/send`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-push-secret': secret,
-      },
-      body: JSON.stringify({
-        title: '🏆 ¡HOY EMPIEZA EL MUNDIAL!',
-        body: 'México vs Sudáfrica · 16:00 ART · Estadio Ciudad de México',
-        tag: 'mundial-start-2026',
-        data: { url: '/partido/1' },
-      }),
-    });
+    const keys = await kv.keys('push:sub:*');
 
-    const json = await res.json() as { sent?: number; failed?: number; error?: string };
+    if (keys.length === 0) {
+      return { ok: true, sent: 0, failed: 0 };
+    }
 
-    if (!res.ok) return { ok: false, error: json.error ?? 'Error del servidor' };
+    const results = await Promise.allSettled(
+      keys.map(async (key) => {
+        const raw = await kv.get<string>(key);
+        if (!raw) return;
+        const sub = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        await webpush.sendNotification(sub, payload);
+      })
+    );
 
-    return { ok: true, sent: json.sent ?? 0, failed: json.failed ?? 0 };
+    const sent   = results.filter((r) => r.status === 'fulfilled').length;
+    const failed = results.length - sent;
+
+    return { ok: true, sent, failed };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : 'Error desconocido' };
   }
