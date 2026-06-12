@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimateNumber } from '@/components/ui/animated-blur-number';
 
 interface CountdownHeroProps {
   targetDate: Date;
@@ -25,16 +25,11 @@ const digitLabels: Record<keyof TimeLeft, string> = {
   days: 'DÍAS', hours: 'HORAS', minutes: 'MIN', seconds: 'SEG',
 };
 
-const shouldReduceMotion = () =>
-  typeof window !== 'undefined' &&
-  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export function CountdownHero({ targetDate, label }: CountdownHeroProps) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
-  const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
-    setReduceMotion(shouldReduceMotion());
     setTimeLeft(calculateTimeLeft(targetDate));
     const interval = setInterval(() => setTimeLeft(calculateTimeLeft(targetDate)), 1000);
     return () => clearInterval(interval);
@@ -66,18 +61,19 @@ export function CountdownHero({ targetDate, label }: CountdownHeroProps) {
         {digits.map((key) => (
           <div key={key} className="cd-cell">
             <div className="cd-box" style={{ ['--cd-accent' as string]: accent }}>
-              <AnimatePresence mode="popLayout">
-                <motion.span
-                  key={timeLeft ? timeLeft[key] : '--'}
-                  initial={reduceMotion ? {} : { y: -20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={reduceMotion ? {} : { y: 20, opacity: 0 }}
-                  transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+              {timeLeft ? (
+                <AnimateNumber
+                  value={timeLeft[key]}
+                  format={{ minimumIntegerDigits: 2, useGrouping: false }}
+                  locale="en-US"
+                  duration={400}
+                  blur={16}
                   className="cd-value"
-                >
-                  {timeLeft ? String(timeLeft[key]).padStart(2, '0') : '--'}
-                </motion.span>
-              </AnimatePresence>
+                  style={{ color: accent }}
+                />
+              ) : (
+                <span className="cd-value">--</span>
+              )}
             </div>
             <span className="cd-cap">{digitLabels[key]}</span>
           </div>
