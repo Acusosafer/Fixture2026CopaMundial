@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell, BellOff, Sun, Moon, Globe, Info, Star, ChevronRight } from 'lucide-react';
+import { Bell, BellOff, Sun, Moon, Globe, Info, Star, ChevronRight, Share2 } from 'lucide-react';
 import Link from 'next/link';
 import { usePreferences } from '@/store/preferences';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
@@ -126,12 +126,31 @@ export default function AjustesPage() {
             iconColor="var(--text-mute)"
           />
         ) : permission === 'denied' ? (
-          <Row
-            icon={BellOff}
-            label="Notificaciones bloqueadas"
-            description="Habilitá los permisos desde la configuración del navegador"
-            iconColor="var(--live)"
-          />
+          <>
+            <Row
+              icon={BellOff}
+              label="Notificaciones bloqueadas"
+              description="El navegador bloqueó los permisos"
+              iconColor="var(--live)"
+            />
+            <div className="px-4 pb-4 pt-3 flex flex-col gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-mute)' }}>
+                Tocá el{' '}
+                <strong style={{ color: 'var(--text-dim)' }}>🔒 candado</strong> en la barra del navegador →{' '}
+                <strong style={{ color: 'var(--text-dim)' }}>Permisos del sitio</strong> →{' '}
+                <strong style={{ color: 'var(--text-dim)' }}>Notificaciones → Permitir</strong>.
+                {' '}Luego tocá Reintentar.
+              </p>
+              <button
+                onClick={subscribe}
+                disabled={isLoading}
+                className="py-2.5 rounded-xl text-xs font-bold transition-all active:scale-[0.98] disabled:opacity-50"
+                style={{ background: 'var(--accent-dim)', border: '1px solid var(--accent-border)', color: 'var(--accent)' }}
+              >
+                {isLoading ? 'Verificando...' : 'Reintentar'}
+              </button>
+            </div>
+          </>
         ) : (
           <Row
             icon={isSubscribed ? Bell : BellOff}
@@ -147,6 +166,33 @@ export default function AjustesPage() {
           />
         )}
       </Section>
+
+      {/* Compartir */}
+      <button
+        onClick={() => {
+          if (navigator.share) {
+            navigator.share({
+              title: 'Mundial 2026',
+              text: '🏆 Seguí el Mundial FIFA 2026 en tiempo real — fixture, grupos, resultados y más.',
+              url: 'https://fixture2026-copamundial.vercel.app',
+            });
+          } else {
+            navigator.clipboard?.writeText('https://fixture2026-copamundial.vercel.app');
+          }
+        }}
+        className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl transition-all active:scale-[0.98]"
+        style={{
+          background: 'var(--accent)',
+          color: 'var(--accent-fg)',
+        }}
+      >
+        <Share2 size={18} strokeWidth={2} />
+        <div className="flex flex-col items-start flex-1">
+          <span className="text-sm font-bold">Compartir app</span>
+          <span className="text-xs opacity-75">Mandala por WhatsApp, Instagram o donde quieras</span>
+        </div>
+        <ChevronRight size={16} className="opacity-60" />
+      </button>
 
       {/* Mi equipo */}
       <Section title="Mi Selección">

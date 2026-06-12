@@ -1,50 +1,74 @@
 import { NextResponse } from 'next/server';
-import { cached } from '@/lib/cache/kv';
 import { TTL } from '@/lib/cache/ttls';
+import { getAPIFootballLive } from '@/lib/api/api-football';
 import { getWCLiveScores } from '@/lib/api/football-data';
+import { getESPNLive } from '@/lib/api/espn';
 import { hasMatchSoon, isWithinTournament, type LiveScore } from '@/lib/live';
 
-// Mock para probar la UI sin API key ni fechas reales.
-// Activar con MOCK_LIVE=true en .env.local
 function getMockLiveScores(): LiveScore[] {
   return [
     { staticMatchId: 1, homeScore: 2, awayScore: 1, minute: 67, injuryTime: 0, status: 'IN_PLAY' },
     { staticMatchId: 2, homeScore: 0, awayScore: 0, minute: 45, injuryTime: 2, status: 'PAUSED' },
-    { staticMatchId: 3, homeScore: 3, awayScore: 1, minute: 90, injuryTime: 0, status: 'FINISHED' },
   ];
 }
 
-export async function GET(): Promise<Response> {
-  // Modo mock: devuelve datos falsos para probar la UI
-  if (process.env.MOCK_LIVE === 'true') {
-    const mock = getMockLiveScores();
-    return NextResponse.json({
-      data: mock,
-      mock: true,
-      liveCount: mock.filter((s) => s.status === 'IN_PLAY' || s.status === 'PAUSED').length,
-    });
+async function fetchLive(): Promise<LiveScore[]> {
+  // 1) ESPN (sin key, público)
+  try {
+    const scores = await getESPNLive();
+    if (scores.length > 0) {
+      console.log('[live] espn scores:', scores.length);
+      return scores;
+    }
+  } catch (e) {
+    console.error('[live] espn failed:', e instanceof Error ? e.message : e);
   }
 
-  // Fuera del torneo no hay nada que consultar
+  // 2) API-Football (RapidAPI)
+  if (process.env.RAPIDAPI_KEY) {
+    try {
+      const scores = await getAPIFootballLive();
+      if (scores.length > 0) {
+        console.log('[live] api-football scores:', scores.length);
+        return scores;
+      }
+    } catch (e) {
+      console.error('[live] api-football failed:', e instanceof Error ? e.message : e);
+    }
+  }
+
+  // 3) Fallback: football-data.org
+  return getWCLiveScores();
+}
+
+export async function GET(): Promise<Response> {
+  if (process.env.MOCK_LIVE === 'true') {
+    const mock = getMockLiveScores();
+    return NextResponse.json({ data: mock, mock: true, liveCount: mock.filter(s => s.status === 'IN_PLAY').length });
+  }
+
   if (!isWithinTournament()) {
     return NextResponse.json({ data: [], tournament: false });
   }
 
-  // TTL corto si hay partido pronto, largo si no
-  const ttl = hasMatchSoon() ? TTL.MATCH_LIVE : TTL.WEATHER; // 30s ó 15min
+  const ttl = hasMatchSoon() ? TTL.MATCH_LIVE : TTL.WEATHER;
 
   try {
-    const result = await cached<LiveScore[]>('live:wc', ttl, getWCLiveScores);
+    const data = await fetchLive();
 
-    return NextResponse.json({
-      data: result.data,
-      cached: result.cached,
+    const res = NextResponse.json({
+      data,
       ttl,
-      liveCount: result.data.filter((s) => s.status === 'IN_PLAY' || s.status === 'PAUSED').length,
+      liveCount: data.filter((s) => s.status === 'IN_PLAY' || s.status === 'PAUSED').length,
     });
+
+    // Cache en Vercel Edge: todos los usuarios comparten una respuesta por ttl segundos
+    res.headers.set('Cache-Control', `s-maxage=${ttl}, stale-while-revalidate=${ttl * 2}`);
+
+    return res;
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    // Si falla (rate limit, red, etc.) devolvemos vacío — la UI usa datos estáticos
+    console.error('[live] fetchLive failed:', message);
     return NextResponse.json({ data: [], error: message, ttl });
   }
 }

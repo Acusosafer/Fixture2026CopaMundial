@@ -105,7 +105,7 @@ export const TLA_TO_CODE: Record<string, string> = {
 };
 
 // ─── Helper: ¿hay partidos del Mundial en las próximas 2h? ──
-const TOURNAMENT_START = new Date('2026-06-12T19:00:00Z');
+const TOURNAMENT_START = new Date('2026-06-11T00:00:00Z');
 const TOURNAMENT_END   = new Date('2026-07-19T23:59:00Z');
 
 export function isWithinTournament(now = new Date()): boolean {

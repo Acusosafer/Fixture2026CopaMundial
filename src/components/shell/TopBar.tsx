@@ -24,7 +24,7 @@ function TeamChip({ teamCode }: { teamCode: string }) {
           <Image src={team.flagUrl} alt={team.nameEs} fill className="object-cover" unoptimized />
         </div>
       ) : null}
-      <span className="max-w-[72px] truncate">{team?.nameEs ?? 'Mi Selección'}</span>
+      <span>{team?.nameEs ?? 'Mi Selección'}</span>
     </Link>
   );
 }
@@ -54,10 +54,11 @@ export function TopBar() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 h-14 flex items-center justify-between px-4 glass-nav"
+      className="fixed top-0 left-0 right-0 z-50 h-14 flex items-center px-3 gap-2 glass-nav"
       style={{ borderBottom: '1px solid var(--border-color)' }}
     >
-      <Link href="/" className="wc-logo" aria-label="World Cup 2026">
+      {/* Left: logo + team chip */}
+      <Link href="/" className="wc-logo shrink-0" aria-label="World Cup 2026">
         <span className="wc-logo-ball">
           <Image
             src="/trophy.png"
@@ -73,22 +74,22 @@ export function TopBar() {
         </span>
       </Link>
 
-      <div className="flex items-center gap-1">
-        <PushIconButton />
+      <TeamChip teamCode={myTeamCode} />
 
+      {/* Spacer */}
+      <div className="flex-1" />
+
+      {/* Right: icon buttons only */}
+      <div className="flex items-center gap-0.5 shrink-0">
+        <PushIconButton />
         <button
           onClick={toggleTheme}
           className="p-2 rounded-full transition-colors"
           style={{ color: 'var(--text-dim)' }}
           aria-label={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
         >
-          {theme === 'dark'
-            ? <Sun size={18} />
-            : <Moon size={18} />
-          }
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
-
-        <TeamChip teamCode={myTeamCode} />
       </div>
     </header>
   );

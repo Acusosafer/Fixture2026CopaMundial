@@ -6,6 +6,8 @@ import { BottomNav } from '@/components/shell/BottomNav';
 import { ThemeSync } from '@/components/shell/ThemeSync';
 import { SplashScreen } from '@/components/shell/SplashScreen';
 import { ServiceWorkerRegistrar } from '@/components/shell/ServiceWorkerRegistrar';
+import { NotificationPrompt } from '@/components/shell/NotificationPrompt';
+import { MatchDayBanner } from '@/components/shell/MatchDayBanner';
 import './globals.css';
 
 const geist = Geist({
@@ -90,6 +92,8 @@ export default function RootLayout({
               Creado por <span style={{ fontWeight: 600 }}>FAS Analytics</span>
             </footer>
           </main>
+          <MatchDayBanner />
+          <NotificationPrompt />
           <BottomNav />
         </Providers>
       </body>

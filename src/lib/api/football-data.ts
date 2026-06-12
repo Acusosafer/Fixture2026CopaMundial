@@ -248,6 +248,19 @@ export async function getWCLiveScores(): Promise<LiveScore[]> {
     );
   }
 
+  // Log para diagnosticar qué devuelve la API
+  if (liveData.status === 'rejected')
+    console.error('[fd] IN_PLAY error:', String(liveData.reason));
+  else
+    console.log('[fd] IN_PLAY count:', liveData.value.matches?.length, '| statuses:', liveData.value.matches?.map((m: FDMatch) => m.status + ':' + m.homeTeam?.tla + 'v' + m.awayTeam?.tla).join(',') || 'none');
+
+  if (todayData.status === 'rejected')
+    console.error('[fd] FINISHED error:', String(todayData.reason));
+  else
+    console.log('[fd] FINISHED count:', todayData.value.matches?.length);
+
+  console.log('[fd] after-filter count:', matches.length);
+
   const scores: LiveScore[] = [];
 
   for (const m of matches) {

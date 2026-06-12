@@ -31,6 +31,8 @@ export function LiveMatchSection() {
 
   if (liveMatches.length === 0) return null;
 
+  const anyLive = liveMatches.some(({ score }) => score.status === 'IN_PLAY' || score.status === 'PAUSED');
+
   return (
     <AnimatePresence>
       <motion.div
@@ -43,12 +45,17 @@ export function LiveMatchSection() {
       >
         <div className="flex items-center justify-between px-0.5">
           <div className="flex items-center gap-1.5">
+            {anyLive && (
+              <span
+                className="w-2 h-2 rounded-full animate-pulse-live"
+                style={{ background: 'var(--live)' }}
+              />
+            )}
             <span
-              className="w-2 h-2 rounded-full animate-pulse-live"
-              style={{ background: 'var(--live)' }}
-            />
-            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--live)' }}>
-              En vivo ahora
+              className="text-xs font-bold uppercase tracking-widest"
+              style={{ color: anyLive ? 'var(--live)' : 'var(--text-dim)' }}
+            >
+              {anyLive ? 'En vivo ahora' : 'Últimos resultados'}
             </span>
           </div>
           <Link href="/fixture" className="text-xs font-semibold" style={{ color: 'var(--accent)' }}>

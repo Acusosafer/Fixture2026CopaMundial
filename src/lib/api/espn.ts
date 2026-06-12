@@ -51,8 +51,13 @@ interface ESPNSummary {
 
 // ── Helpers ───────────────────────────────────────────────────
 
+const ESPN_FINISHED_TYPES = new Set([
+  'STATUS_FINAL', 'STATUS_FULL_TIME', 'STATUS_END_PERIOD',
+  'STATUS_ABANDONED', 'STATUS_POSTPONED', 'STATUS_CANCELLED',
+]);
+
 function mapESPNStatus(state: string, completed: boolean, typeName?: string, description?: string): LiveScore['status'] {
-  if (completed || state === 'post') return 'FINISHED';
+  if (completed || state === 'post' || (typeName && ESPN_FINISHED_TYPES.has(typeName))) return 'FINISHED';
   // ESPN uses state='in' for BOTH in-play and halftime; distinguish via type.name or description
   if (typeName === 'STATUS_HALFTIME' || state === 'halftime' || description?.toLowerCase() === 'halftime') return 'PAUSED';
   if (state === 'in') return 'IN_PLAY';
