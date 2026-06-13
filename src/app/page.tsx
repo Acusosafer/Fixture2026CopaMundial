@@ -8,6 +8,7 @@ import { useMySelection } from '@/hooks/useMySelection';
 import { useLiveScores } from '@/hooks/useLiveScores';
 import { getTeamByCode, type Team } from '@/lib/teams';
 import { getNextMatchForTeam, staticMatches } from '@/lib/fixtures-static';
+import { isActiveStatus } from '@/lib/live';
 import { FlagBackground } from '@/components/team/FlagBackground';
 import { WeatherChip } from '@/components/weather/WeatherChip';
 import { CountdownHero } from '@/components/match/CountdownHero';
@@ -116,7 +117,7 @@ function UpcomingMatchesSection({ reduceMotion }: { reduceMotion: boolean }) {
             const away = getTeamByCode(m.awayTeamCode);
             if (!home || !away) return null;
             const live       = liveScores.get(m.id);
-            const isLive     = live?.status === 'IN_PLAY' || live?.status === 'PAUSED';
+            const isLive     = live ? isActiveStatus(live.status) : false;
             const isFinished = live?.status === 'FINISHED' || m.status === 'finished';
             const homeScore  = live?.homeScore ?? m.homeScore;
             const awayScore  = live?.awayScore ?? m.awayScore;
@@ -146,7 +147,14 @@ function UpcomingMatchesSection({ reduceMotion }: { reduceMotion: boolean }) {
                       </span>
                     </div>
                     <span className="text-[9px]" style={{ color: 'var(--live)' }}>
-                      {live?.status === 'PAUSED' ? 'ET' : `${live?.minute ?? 0}'`}
+                      {live?.status === 'PAUSED' ? 'ET'
+                        : live?.status === 'PAUSED_ET' ? 'D.TE'
+                        : live?.status === 'PENALTIES' ? 'PEN'
+                        : live?.status === 'EXTRA_TIME'
+                          ? (live.injuryTime > 0 ? `${live.minute}+${live.injuryTime}'` : `TE ${live.minute}'`)
+                          : live?.injuryTime && live.injuryTime > 0
+                            ? `${live.minute}+${live.injuryTime}'`
+                            : `${live?.minute ?? 0}'`}
                     </span>
                   </div>
                 ) : isFinished && homeScore !== null ? (

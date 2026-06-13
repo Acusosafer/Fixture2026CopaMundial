@@ -3,12 +3,17 @@ import { staticMatches } from './fixtures-static';
 // ─── Tipo normalizado de score en vivo ──────────────────────
 export interface LiveScore {
   staticMatchId: number;
-  fdMatchId?: number;    // ID interno de football-data.org (para detail)
+  fdMatchId?: number;
   homeScore: number;
   awayScore: number;
-  minute: number;        // 0 = no iniciado, 45 = media hora, 90+ = final
+  minute: number;
   injuryTime: number;
-  status: 'IN_PLAY' | 'PAUSED' | 'FINISHED' | 'SUSPENDED';
+  status: 'IN_PLAY' | 'PAUSED' | 'EXTRA_TIME' | 'PAUSED_ET' | 'PENALTIES' | 'FINISHED' | 'SUSPENDED';
+}
+
+// Helper: el partido está activo (no terminado ni suspendido)
+export function isActiveStatus(status: LiveScore['status']): boolean {
+  return status === 'IN_PLAY' || status === 'PAUSED' || status === 'EXTRA_TIME' || status === 'PAUSED_ET' || status === 'PENALTIES';
 }
 
 // ─── Eventos del partido ─────────────────────────────────────

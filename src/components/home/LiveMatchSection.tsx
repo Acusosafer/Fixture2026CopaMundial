@@ -6,12 +6,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLiveScores } from '@/hooks/useLiveScores';
 import { staticMatches } from '@/lib/fixtures-static';
 import { getTeamByCode } from '@/lib/teams';
+import { isActiveStatus, type LiveScore } from '@/lib/live';
 
-function minuteLabel(minute: number, injuryTime: number, status: string): string {
-  if (status === 'PAUSED') return 'Entretiempo';
-  if (status === 'FINISHED') return 'Finalizado';
-  if (injuryTime > 0) return `${minute}+${injuryTime}'`;
-  return `${minute}'`;
+function minuteLabel(minute: number, injuryTime: number, status: LiveScore['status']): string {
+  switch (status) {
+    case 'PAUSED':    return 'Entretiempo';
+    case 'PAUSED_ET': return 'Desc. T. Extra';
+    case 'PENALTIES': return 'Penales';
+    case 'FINISHED':  return 'Finalizado';
+    case 'EXTRA_TIME':
+    case 'IN_PLAY':
+      return injuryTime > 0 ? `${minute}+${injuryTime}'` : `${minute}'`;
+    default:          return `${minute}'`;
+  }
 }
 
 export function LiveMatchSection() {
@@ -20,18 +27,17 @@ export function LiveMatchSection() {
   const liveMatches = staticMatches
     .filter(m => {
       const s = scores.get(m.id);
-      return s && (s.status === 'IN_PLAY' || s.status === 'PAUSED' || s.status === 'FINISHED');
+      return s && (isActiveStatus(s.status) || s.status === 'FINISHED');
     })
     .map(m => ({ match: m, score: scores.get(m.id)! }))
     .sort((a, b) => {
-      // IN_PLAY first, then PAUSED, then FINISHED
-      const order = { IN_PLAY: 0, PAUSED: 1, FINISHED: 2, SUSPENDED: 3 };
+      const order: Record<string, number> = { IN_PLAY: 0, EXTRA_TIME: 0, PENALTIES: 0, PAUSED: 1, PAUSED_ET: 1, FINISHED: 2, SUSPENDED: 3 };
       return (order[a.score.status] ?? 3) - (order[b.score.status] ?? 3);
     });
 
   if (liveMatches.length === 0) return null;
 
-  const anyLive = liveMatches.some(({ score }) => score.status === 'IN_PLAY' || score.status === 'PAUSED');
+  const anyLive = liveMatches.some(({ score }) => isActiveStatus(score.status));
 
   return (
     <AnimatePresence>
@@ -66,8 +72,9 @@ export function LiveMatchSection() {
         {liveMatches.map(({ match, score }) => {
           const home = getTeamByCode(match.homeTeamCode);
           const away = getTeamByCode(match.awayTeamCode);
-          const isHalfTime = score.status === 'PAUSED';
+          const isHalfTime = score.status === 'PAUSED' || score.status === 'PAUSED_ET';
           const isFinished = score.status === 'FINISHED';
+          const isActive = isActiveStatus(score.status);
           const label = minuteLabel(score.minute, score.injuryTime, score.status);
 
           return (
@@ -76,13 +83,13 @@ export function LiveMatchSection() {
                 whileTap={{ scale: 0.98 }}
                 className="rounded-2xl overflow-hidden"
                 style={{
-                  background: isFinished
-                    ? 'var(--bg-card)'
-                    : 'linear-gradient(135deg, rgba(239,68,68,0.08) 0%, var(--bg-card) 60%)',
-                  border: isFinished
-                    ? '1px solid var(--border-color)'
-                    : '1px solid rgba(239,68,68,0.35)',
-                  boxShadow: isFinished ? 'none' : '0 0 20px rgba(239,68,68,0.08)',
+                  background: isActive
+                    ? 'linear-gradient(135deg, rgba(239,68,68,0.08) 0%, var(--bg-card) 60%)'
+                    : 'var(--bg-card)',
+                  border: isActive
+                    ? '1px solid rgba(239,68,68,0.35)'
+                    : '1px solid var(--border-color)',
+                  boxShadow: isActive ? '0 0 20px rgba(239,68,68,0.08)' : 'none',
                 }}
               >
                 {/* Status bar */}
@@ -91,7 +98,7 @@ export function LiveMatchSection() {
                   style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
                 >
                   <div className="flex items-center gap-1.5">
-                    {!isFinished && (
+                    {isActive && (
                       <span
                         className="w-1.5 h-1.5 rounded-full"
                         style={{
@@ -102,7 +109,7 @@ export function LiveMatchSection() {
                     )}
                     <span
                       className="text-[11px] font-bold uppercase tracking-widest"
-                      style={{ color: isFinished ? 'var(--text-dim)' : 'var(--live)' }}
+                      style={{ color: isActive ? 'var(--live)' : 'var(--text-dim)' }}
                     >
                       {label}
                     </span>
@@ -132,20 +139,20 @@ export function LiveMatchSection() {
                   {/* Score */}
                   <div className="shrink-0 flex items-baseline gap-2 px-3 py-1.5 rounded-xl"
                     style={{
-                      background: isFinished ? 'var(--border-subtle)' : 'rgba(239,68,68,0.12)',
-                      border: isFinished ? '1px solid var(--border-color)' : '1px solid rgba(239,68,68,0.2)',
+                      background: isActive ? 'rgba(239,68,68,0.12)' : 'var(--border-subtle)',
+                      border: isActive ? '1px solid rgba(239,68,68,0.2)' : '1px solid var(--border-color)',
                     }}
                   >
                     <span
                       className="text-2xl font-black font-heading tabular-nums leading-none"
-                      style={{ color: isFinished ? 'var(--text-dim)' : 'var(--live)' }}
+                      style={{ color: isActive ? 'var(--live)' : 'var(--text-dim)' }}
                     >
                       {score.homeScore}
                     </span>
                     <span className="text-base font-bold" style={{ color: 'var(--text-mute)' }}>–</span>
                     <span
                       className="text-2xl font-black font-heading tabular-nums leading-none"
-                      style={{ color: isFinished ? 'var(--text-dim)' : 'var(--live)' }}
+                      style={{ color: isActive ? 'var(--live)' : 'var(--text-dim)' }}
                     >
                       {score.awayScore}
                     </span>
@@ -173,7 +180,7 @@ export function LiveMatchSection() {
                   style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}
                 >
                   <span className="text-[11px] font-semibold" style={{ color: isFinished ? 'var(--accent)' : 'var(--live)' }}>
-                    {isFinished ? 'Ver resultado completo' : 'Ver detalles del partido'} →
+                    {isActive ? 'Ver detalles del partido' : 'Ver resultado completo'} →
                   </span>
                 </div>
               </motion.div>

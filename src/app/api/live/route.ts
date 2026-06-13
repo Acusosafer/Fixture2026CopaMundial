@@ -3,7 +3,7 @@ import { TTL } from '@/lib/cache/ttls';
 import { getAPIFootballLive } from '@/lib/api/api-football';
 import { getWCLiveScores } from '@/lib/api/football-data';
 import { getESPNLive } from '@/lib/api/espn';
-import { hasMatchSoon, isWithinTournament, type LiveScore } from '@/lib/live';
+import { hasMatchSoon, isActiveStatus, isWithinTournament, type LiveScore } from '@/lib/live';
 
 function getMockLiveScores(): LiveScore[] {
   return [
@@ -59,7 +59,7 @@ export async function GET(): Promise<Response> {
     const res = NextResponse.json({
       data,
       ttl,
-      liveCount: data.filter((s) => s.status === 'IN_PLAY' || s.status === 'PAUSED').length,
+      liveCount: data.filter((s) => isActiveStatus(s.status)).length,
     });
 
     // Cache en Vercel Edge: todos los usuarios comparten una respuesta por ttl segundos

@@ -51,25 +51,48 @@ interface ESPNSummary {
 
 // ── Helpers ───────────────────────────────────────────────────
 
+// STATUS_END_PERIOD is NOT a match end — it's the break between ET halves
 const ESPN_FINISHED_TYPES = new Set([
-  'STATUS_FINAL', 'STATUS_FULL_TIME', 'STATUS_END_PERIOD',
+  'STATUS_FINAL', 'STATUS_FULL_TIME',
   'STATUS_ABANDONED', 'STATUS_POSTPONED', 'STATUS_CANCELLED',
 ]);
 
-function mapESPNStatus(state: string, completed: boolean, typeName?: string, description?: string): LiveScore['status'] {
+// Minutes at which each period ends (used to calculate injury time)
+const PERIOD_MAX: Record<number, number> = { 1: 45, 2: 90, 3: 105, 4: 120 };
+// Minutes elapsed at the start of each period (for displayClock fallback)
+const PERIOD_BASE: Record<number, number> = { 1: 0, 2: 45, 3: 90, 4: 105, 5: 120 };
+
+function mapESPNStatus(
+  state: string, completed: boolean, typeName?: string, description?: string, period?: number
+): LiveScore['status'] {
   if (completed || state === 'post' || (typeName && ESPN_FINISHED_TYPES.has(typeName))) return 'FINISHED';
-  // ESPN uses state='in' for BOTH in-play and halftime; distinguish via type.name or description
-  if (typeName === 'STATUS_HALFTIME' || state === 'halftime' || description?.toLowerCase() === 'halftime') return 'PAUSED';
-  if (state === 'in') return 'IN_PLAY';
+  if (typeName === 'STATUS_HALFTIME' || state === 'halftime' || description?.toLowerCase() === 'halftime') {
+    return (period && period >= 3) ? 'PAUSED_ET' : 'PAUSED';
+  }
+  if (typeName === 'STATUS_END_PERIOD') return 'PAUSED_ET';
+  if (state === 'in') {
+    if (period === 5) return 'PENALTIES';
+    if (period === 3 || period === 4) return 'EXTRA_TIME';
+    return 'IN_PLAY';
+  }
   return 'SUSPENDED';
 }
 
-function parseESPNClock(clock: number, displayClock: string, period: number): number {
-  // clock = total elapsed seconds from match kickoff (cumulative across periods)
-  if (clock > 0) return Math.floor(clock / 60);
-  // fallback: displayClock is "mm:ss" elapsed in current period
-  const m = parseInt(displayClock?.split(':')[0] ?? displayClock?.replace("'", '') ?? '0', 10);
-  return period >= 2 ? 45 + (m || 0) : m || 0;
+function parseESPNTime(clock: number, displayClock: string, period: number): { minute: number; injuryTime: number } {
+  let total: number;
+  if (clock > 0) {
+    // clock = cumulative elapsed seconds from kickoff
+    total = Math.floor(clock / 60);
+  } else {
+    const base = PERIOD_BASE[period] ?? 0;
+    const m = parseInt(displayClock?.split(':')[0] ?? displayClock?.replace("'", '') ?? '0', 10);
+    total = base + (m || 0);
+  }
+  const max = PERIOD_MAX[period];
+  if (max !== undefined && total > max) {
+    return { minute: max, injuryTime: total - max };
+  }
+  return { minute: total, injuryTime: 0 };
 }
 
 // Parse "9'" → 9, "45+2'" → 45, "67:34" → 67
@@ -136,13 +159,14 @@ function parseESPNEvents(events: ESPNEvent[]): LiveScore[] {
     const { state, completed, name: typeName, description } = ev.status.type;
     if (state === 'pre') continue;
 
+    const { minute, injuryTime } = parseESPNTime(ev.status.clock, ev.status.displayClock, ev.status.period);
     scores.push({
       staticMatchId: sm.id,
       homeScore: parseInt(home.score, 10) || 0,
       awayScore: parseInt(away.score, 10) || 0,
-      minute: parseESPNClock(ev.status.clock, ev.status.displayClock, ev.status.period),
-      injuryTime: 0,
-      status: mapESPNStatus(state, completed, typeName, description),
+      minute,
+      injuryTime,
+      status: mapESPNStatus(state, completed, typeName, description, ev.status.period),
     });
   }
   return scores;
