@@ -79,15 +79,26 @@ function mapESPNStatus(
 }
 
 function parseESPNTime(clock: number, displayClock: string, period: number): { minute: number; injuryTime: number } {
+  // ESPN a veces manda displayClock como "90+6:00" o "45+3" durante tiempo adicional
+  const injuryMatch = displayClock?.match(/^(\d+)\+(\d+)/);
+  if (injuryMatch) {
+    return { minute: parseInt(injuryMatch[1], 10), injuryTime: parseInt(injuryMatch[2], 10) };
+  }
+
   let total: number;
   if (clock > 0) {
-    // clock = cumulative elapsed seconds from kickoff
-    total = Math.floor(clock / 60);
+    // Si clock es por período (resetea cada mitad): sumar base del período
+    // Si clock es acumulado: usar directo
+    // Detectamos: si clock < PERIOD_BASE[period]*60 es probable que sea por período
+    const base = PERIOD_BASE[period] ?? 0;
+    const clockMinutes = Math.floor(clock / 60);
+    total = clockMinutes < base ? base + clockMinutes : clockMinutes;
   } else {
     const base = PERIOD_BASE[period] ?? 0;
     const m = parseInt(displayClock?.split(':')[0] ?? displayClock?.replace("'", '') ?? '0', 10);
     total = base + (m || 0);
   }
+
   const max = PERIOD_MAX[period];
   if (max !== undefined && total > max) {
     return { minute: max, injuryTime: total - max };
@@ -158,6 +169,11 @@ function parseESPNEvents(events: ESPNEvent[]): LiveScore[] {
 
     const { state, completed, name: typeName, description } = ev.status.type;
     if (state === 'pre') continue;
+
+    // Log raw clock data para diagnosticar injury time
+    if (state === 'in') {
+      console.log(`[espn] clock raw: match=${sm.id} period=${ev.status.period} clock=${ev.status.clock} displayClock="${ev.status.displayClock}" typeName=${typeName}`);
+    }
 
     const { minute, injuryTime } = parseESPNTime(ev.status.clock, ev.status.displayClock, ev.status.period);
     scores.push({
