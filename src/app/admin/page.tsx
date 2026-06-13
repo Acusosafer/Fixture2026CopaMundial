@@ -274,7 +274,7 @@ export default function AdminPage() {
     setResult({
       ok: r.ok,
       msg: r.ok
-        ? `✓ Enviado a ${r.sent} suscriptor${r.sent === 1 ? '' : 'es'}${r.failed ? ` · ${r.failed} fallaron` : ''}`
+        ? `✓ Enviado a ${r.sent} suscriptor${r.sent === 1 ? '' : 'es'}${r.failed ? ` · ${r.failed} fallaron` : ''}${r.removed ? ` · ${r.removed} eliminadas` : ''}`
         : `✗ ${r.error}`,
     });
   }

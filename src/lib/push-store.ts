@@ -26,10 +26,10 @@ export async function deleteSub(endpoint: string) {
   if (error) throw error;
 }
 
-export async function getAllSubs(): Promise<object[]> {
+export async function getAllSubs(): Promise<PushSub[]> {
   const { data, error } = await getClient()
     .from('push_subscriptions')
-    .select('subscription');
+    .select('endpoint, subscription');
   if (error) throw error;
-  return (data ?? []).map((r) => r.subscription as object);
+  return (data ?? []).map((r) => ({ endpoint: r.endpoint, subscription: r.subscription as object }));
 }
