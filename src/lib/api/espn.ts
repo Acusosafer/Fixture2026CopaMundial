@@ -102,68 +102,121 @@ async function espnFetch<T>(url: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+// ── Date helpers ─────────────────────────────────────────────
+
+const TOURNAMENT_START = new Date('2026-06-11T00:00:00Z');
+
+function getDatesSinceStart(): string[] {
+  const dates: string[] = [];
+  const d = new Date(TOURNAMENT_START);
+  const now = new Date();
+  while (d <= now) {
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    dates.push(`${y}${m}${day}`);
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
+  return dates;
+}
+
+function parseESPNEvents(events: ESPNEvent[]): LiveScore[] {
+  const scores: LiveScore[] = [];
+  for (const ev of events) {
+    const comp = ev.competitions?.[0];
+    const home = comp?.competitors.find(c => c.homeAway === 'home');
+    const away = comp?.competitors.find(c => c.homeAway === 'away');
+    if (!home || !away) continue;
+
+    const homeCode = TLA_TO_CODE[home.team.abbreviation] ?? home.team.abbreviation;
+    const awayCode = TLA_TO_CODE[away.team.abbreviation] ?? away.team.abbreviation;
+    const sm = staticMatches.find(m => m.homeTeamCode === homeCode && m.awayTeamCode === awayCode);
+    if (!sm) continue;
+
+    const { state, completed, name: typeName, description } = ev.status.type;
+    if (state === 'pre') continue;
+
+    scores.push({
+      staticMatchId: sm.id,
+      homeScore: parseInt(home.score, 10) || 0,
+      awayScore: parseInt(away.score, 10) || 0,
+      minute: parseESPNClock(ev.status.clock, ev.status.displayClock, ev.status.period),
+      injuryTime: 0,
+      status: mapESPNStatus(state, completed, typeName, description),
+    });
+  }
+  return scores;
+}
+
 // ── Find ESPN event for a static match ───────────────────────
 
 async function findESPNEvent(staticMatchId: number): Promise<{ slug: string; event: ESPNEvent } | null> {
   const sm = staticMatches.find(m => m.id === staticMatchId);
   if (!sm) return null;
 
+  // Match date as YYYYMMDD for targeted fetch
+  const matchDate = new Date(sm.date);
+  const matchDateStr = `${matchDate.getUTCFullYear()}${String(matchDate.getUTCMonth() + 1).padStart(2, '0')}${String(matchDate.getUTCDate()).padStart(2, '0')}`;
+
   for (const slug of WC_SLUGS) {
-    try {
-      const data = await espnFetch<{ events?: ESPNEvent[] }>(`${BASE}/${slug}/scoreboard`);
-      const ev = (data.events ?? []).find(e => {
-        const comp = e.competitions?.[0];
-        const home = comp?.competitors.find(c => c.homeAway === 'home');
-        const away = comp?.competitors.find(c => c.homeAway === 'away');
-        const hc = TLA_TO_CODE[home?.team.abbreviation ?? ''] ?? home?.team.abbreviation;
-        const ac = TLA_TO_CODE[away?.team.abbreviation ?? ''] ?? away?.team.abbreviation;
-        return hc === sm.homeTeamCode && ac === sm.awayTeamCode;
-      });
-      if (ev) return { slug, event: ev };
-    } catch { /* try next slug */ }
+    // Try the match's specific date first, then today's scoreboard
+    for (const dateParam of [matchDateStr, '']) {
+      try {
+        const url = dateParam
+          ? `${BASE}/${slug}/scoreboard?dates=${dateParam}`
+          : `${BASE}/${slug}/scoreboard`;
+        const data = await espnFetch<{ events?: ESPNEvent[] }>(url);
+        const ev = (data.events ?? []).find(e => {
+          const comp = e.competitions?.[0];
+          const home = comp?.competitors.find(c => c.homeAway === 'home');
+          const away = comp?.competitors.find(c => c.homeAway === 'away');
+          const hc = TLA_TO_CODE[home?.team.abbreviation ?? ''] ?? home?.team.abbreviation;
+          const ac = TLA_TO_CODE[away?.team.abbreviation ?? ''] ?? away?.team.abbreviation;
+          return hc === sm.homeTeamCode && ac === sm.awayTeamCode;
+        });
+        if (ev) return { slug, event: ev };
+      } catch { /* try next */ }
+    }
   }
   return null;
 }
 
 // ── Public: live scores ───────────────────────────────────────
 
+// STATUS priority for deduplication across dates: IN_PLAY > PAUSED > FINISHED
+const STATUS_PRIORITY: Record<LiveScore['status'], number> = {
+  IN_PLAY: 3, PAUSED: 2, FINISHED: 1, SUSPENDED: 0,
+};
+
 export async function getESPNLive(): Promise<LiveScore[]> {
+  const dates = getDatesSinceStart();
+
   for (const slug of WC_SLUGS) {
     try {
-      const data = await espnFetch<{ events?: ESPNEvent[] }>(`${BASE}/${slug}/scoreboard`);
-      const events = data.events ?? [];
-      const scores: LiveScore[] = [];
+      // Fetch all days in parallel — today has no ?dates param (returns live events)
+      const results = await Promise.allSettled(
+        dates.map(date =>
+          espnFetch<{ events?: ESPNEvent[] }>(`${BASE}/${slug}/scoreboard?dates=${date}`)
+        )
+      );
 
-      for (const ev of events) {
-        const comp = ev.competitions?.[0];
-        const home = comp?.competitors.find(c => c.homeAway === 'home');
-        const away = comp?.competitors.find(c => c.homeAway === 'away');
-        if (!home || !away) continue;
+      const scoreMap = new Map<number, LiveScore>();
 
-        const homeCode = TLA_TO_CODE[home.team.abbreviation] ?? home.team.abbreviation;
-        const awayCode = TLA_TO_CODE[away.team.abbreviation] ?? away.team.abbreviation;
-        const sm = staticMatches.find(m => m.homeTeamCode === homeCode && m.awayTeamCode === awayCode);
-        if (!sm) continue;
-
-        const { state, completed, name: typeName, description } = ev.status.type;
-        if (state === 'pre') continue;
-
-        const minute = parseESPNClock(ev.status.clock, ev.status.displayClock, ev.status.period);
-
-        scores.push({
-          staticMatchId: sm.id,
-          homeScore: parseInt(home.score, 10) || 0,
-          awayScore: parseInt(away.score, 10) || 0,
-          minute,
-          injuryTime: 0,
-          status: mapESPNStatus(state, completed, typeName, description),
-        });
+      for (const result of results) {
+        if (result.status !== 'fulfilled') continue;
+        for (const score of parseESPNEvents(result.value.events ?? [])) {
+          const existing = scoreMap.get(score.staticMatchId);
+          if (!existing || STATUS_PRIORITY[score.status] > STATUS_PRIORITY[existing.status]) {
+            scoreMap.set(score.staticMatchId, score);
+          }
+        }
       }
 
+      const scores = [...scoreMap.values()];
       if (scores.length > 0) {
-        console.log(`[espn] live: ${scores.map(s => `match${s.staticMatchId}=${s.homeScore}-${s.awayScore}@${s.minute}'`).join(', ')}`);
+        console.log(`[espn] live (${dates.length} dates): ${scores.map(s => `m${s.staticMatchId}=${s.homeScore}-${s.awayScore} ${s.status}`).join(', ')}`);
+        return scores;
       }
-      return scores;
     } catch (e) {
       console.error(`[espn] ${slug} live error:`, e instanceof Error ? e.message : e);
     }
