@@ -225,7 +225,7 @@ async function findESPNEvent(staticMatchId: number): Promise<{ slug: string; eve
 
 // STATUS priority for deduplication across dates: IN_PLAY > PAUSED > FINISHED
 const STATUS_PRIORITY: Record<LiveScore['status'], number> = {
-  IN_PLAY: 3, PAUSED: 2, FINISHED: 1, SUSPENDED: 0,
+  IN_PLAY: 3, EXTRA_TIME: 3, PENALTIES: 3, PAUSED: 2, PAUSED_ET: 2, FINISHED: 1, SUSPENDED: 0,
 };
 
 export async function getESPNLive(): Promise<LiveScore[]> {
