@@ -21,13 +21,31 @@ function minuteLabel(minute: number, injuryTime: number, status: LiveScore['stat
   }
 }
 
+const ART_OFFSET_MS = -3 * 60 * 60 * 1000;
+
+function toARTDateStr(isoDate: string): string {
+  const d = new Date(new Date(isoDate).getTime() + ART_OFFSET_MS);
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+}
+
+function yesterdayARTStr(): string {
+  const d = new Date(new Date().getTime() + ART_OFFSET_MS - 24 * 60 * 60 * 1000);
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+}
+
 export function LiveMatchSection() {
   const { scores } = useLiveScores();
+
+  const yesterday = yesterdayARTStr();
 
   const liveMatches = staticMatches
     .filter(m => {
       const s = scores.get(m.id);
-      return s && (isActiveStatus(s.status) || s.status === 'FINISHED');
+      if (!s) return false;
+      if (isActiveStatus(s.status)) return true;
+      // Finalizados: solo los de ayer
+      if (s.status === 'FINISHED') return toARTDateStr(m.date) === yesterday;
+      return false;
     })
     .map(m => ({ match: m, score: scores.get(m.id)! }))
     .sort((a, b) => {
