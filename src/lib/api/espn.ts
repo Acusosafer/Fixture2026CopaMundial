@@ -79,8 +79,8 @@ function mapESPNStatus(
 }
 
 function parseESPNTime(clock: number, displayClock: string, period: number): { minute: number; injuryTime: number } {
-  // ESPN a veces manda displayClock como "90+6:00" o "45+3" durante tiempo adicional
-  const injuryMatch = displayClock?.match(/^(\d+)\+(\d+)/);
+  // ESPN manda displayClock como "90'+7'" (con apóstrofo) o "90+6" durante tiempo adicional
+  const injuryMatch = displayClock?.match(/^(\d+)'?\+(\d+)/);
   if (injuryMatch) {
     return { minute: parseInt(injuryMatch[1], 10), injuryTime: parseInt(injuryMatch[2], 10) };
   }
