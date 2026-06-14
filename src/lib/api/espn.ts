@@ -233,12 +233,14 @@ export async function getESPNLive(): Promise<LiveScore[]> {
 
   for (const slug of WC_SLUGS) {
     try {
-      // Fetch all days in parallel — today has no ?dates param (returns live events)
-      const results = await Promise.allSettled(
-        dates.map(date =>
+      // Fetch historical dates + scoreboard sin ?dates (vista live de ESPN) en paralelo
+      // El sin-fecha siempre devuelve partidos en vivo aunque el ?dates del día falle por rate-limit
+      const results = await Promise.allSettled([
+        ...dates.map(date =>
           espnFetch<{ events?: ESPNEvent[] }>(`${BASE}/${slug}/scoreboard?dates=${date}`)
-        )
-      );
+        ),
+        espnFetch<{ events?: ESPNEvent[] }>(`${BASE}/${slug}/scoreboard`),
+      ]);
 
       const scoreMap = new Map<number, LiveScore>();
 
