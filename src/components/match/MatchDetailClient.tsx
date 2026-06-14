@@ -8,6 +8,7 @@ import { useLiveScores } from '@/hooks/useLiveScores';
 import { useGoalEffect } from '@/hooks/useGoalEffect';
 import type { StaticMatch } from '@/lib/fixtures-static';
 import type { Team } from '@/lib/teams';
+import { isActiveStatus } from '@/lib/live';
 
 const DAYS_ES = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 const MONTHS_ES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -32,8 +33,9 @@ export function MatchDetailClient({ match, homeTeam, awayTeam }: MatchDetailClie
   const live = scores.get(match.id);
   const { triggerGoal } = useGoalEffect();
 
-  const isLive     = live?.status === 'IN_PLAY' || live?.status === 'PAUSED';
+  const isLive     = live ? isActiveStatus(live.status) : false;
   const isFinished = live?.status === 'FINISHED' || match.status === 'finished';
+  const matchStarted = new Date(match.date) < new Date();
   const homeScore  = live?.homeScore ?? match.homeScore;
   const awayScore  = live?.awayScore ?? match.awayScore;
   const minute     = live?.minute ?? 0;
@@ -62,6 +64,20 @@ export function MatchDetailClient({ match, homeTeam, awayTeam }: MatchDetailClie
   // Upcoming match — show countdown
   if (!isLive && !isFinished) {
     const targetDate = new Date(match.date);
+    // Partido ya empezó pero aún no tenemos datos en vivo
+    if (matchStarted) {
+      return (
+        <div className="flex flex-col items-center gap-2 py-6">
+          <span className="w-2 h-2 rounded-full animate-pulse-live" style={{ background: 'var(--live)' }} />
+          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--live)' }}>
+            En curso
+          </p>
+          <p className="text-xs" style={{ color: 'var(--text-mute)' }}>
+            Cargando datos del partido…
+          </p>
+        </div>
+      );
+    }
     return (
       <div className="flex flex-col items-center gap-4 py-4">
         <CountdownHero targetDate={targetDate} label="FALTAN PARA EL PARTIDO" />

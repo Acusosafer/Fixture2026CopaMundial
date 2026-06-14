@@ -91,11 +91,11 @@ export const TLA_TO_CODE: Record<string, string> = {
   ARG: 'AR', BRA: 'BR', URU: 'UY', CHI: 'CL',
   COL: 'CO', PER: 'PE', ECU: 'EC', PAR: 'PY',
   MEX: 'MX', USA: 'US', CAN: 'CA', PAN: 'PA',
-  JAM: 'JM', HON: 'HN', CRC: 'CR',
+  JAM: 'JM', HON: 'HN', CRC: 'CR', HAI: 'HT', CUW: 'CW',
   // Europa
   FRA: 'FR', GER: 'DE', ESP: 'ES', POR: 'PT',
   NED: 'NL', BEL: 'BE', CRO: 'HR', SRB: 'RS',
-  DEN: 'DK', ALB: 'AL', TUR: 'TR', BIH: 'BA',
+  DEN: 'DK', ALB: 'AL', TUR: 'TR', BIH: 'BA', SWE: 'SE',
   SUI: 'CH', CZE: 'CZ', AUT: 'AT', POL: 'PL',
   ENG: 'GB-ENG', SCO: 'GB-SCT', WAL: 'GB-WLS',
   // África
