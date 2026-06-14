@@ -1,7 +1,20 @@
 /* eslint-disable no-undef */
 'use strict';
 
-// ── Push event ──────────────────────────────────────────────────────────────
+// ── Install / Activate ───────────────────────────────────────────────────────
+
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
+// ── Fetch (pass-through — requerido para que Chrome muestre "Instalar app") ──
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(fetch(event.request));
+});
+
+// ── Push event ───────────────────────────────────────────────────────────────
 
 self.addEventListener('push', (event) => {
   if (!event.data) return;
@@ -13,13 +26,13 @@ self.addEventListener('push', (event) => {
     payload = { title: 'Mundial 2026', body: event.data.text() };
   }
 
-  const { title = 'Mundial 2026', body = '', icon = '/icon.svg', tag, data } = payload;
+  const { title = 'Mundial 2026', body = '', tag, data } = payload;
 
   event.waitUntil(
     self.registration.showNotification(title, {
       body,
-      icon,
-      badge: '/icon.svg',
+      icon: '/icon-192.png',
+      badge: '/icon-192.png',
       tag: tag ?? 'mundial-push',
       renotify: true,
       data: data ?? {},
@@ -27,7 +40,7 @@ self.addEventListener('push', (event) => {
   );
 });
 
-// ── Notification click ───────────────────────────────────────────────────────
+// ── Notification click ────────────────────────────────────────────────────────
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
