@@ -1,13 +1,11 @@
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { groups } from '@/lib/groups';
 import { useFixtures } from '@/hooks/useFixtures';
 import { GroupTable } from '@/components/group/GroupTable';
 import type { StaticMatch } from '@/lib/fixtures-static';
 import type { Group } from '@/lib/groups';
-
-const GROUP_NAMES = groups.map((g) => g.name);
 
 // ── Compute 3rd-place stats for a single group ────────────────────────────────
 
@@ -46,16 +44,8 @@ function get3rdPlace(group: Group, matches: StaticMatch[]): ThirdStats | null {
 
 export default function GruposPage() {
   const { matches, isLoading } = useFixtures();
-  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+  const [selectedGroup, setSelectedGroup] = useState<string>('A');
 
-  function scrollToGroup(name: string) {
-    const el = sectionRefs.current[name];
-    if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - 110;
-    window.scrollTo({ top, behavior: 'smooth' });
-  }
-
-  // Compute the 8 best 3rd-place teams across all groups
   const bestThirds = useMemo<Set<string>>(() => {
     const thirds: ThirdStats[] = [];
     for (const g of groups) {
@@ -71,6 +61,8 @@ export default function GruposPage() {
     return new Set(thirds.slice(0, 8).map((t) => t.code));
   }, [matches]);
 
+  const visibleGroups = groups.filter((g) => g.name === selectedGroup);
+
   return (
     <main className="min-h-screen pb-24" style={{ background: 'var(--bg)' }}>
       {/* Sticky header */}
@@ -81,37 +73,39 @@ export default function GruposPage() {
         <h1 className="font-heading text-4xl tracking-wide mb-3" style={{ color: 'var(--text)' }}>
           GRUPOS
         </h1>
-        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-          {GROUP_NAMES.map((name) => (
-            <button
-              key={name}
-              onClick={() => scrollToGroup(name)}
-              className="flex-shrink-0 w-10 h-10 rounded-full text-sm font-black transition-all active:scale-95"
-              style={{
-                background: 'var(--accent-dim)',
-                color: 'var(--accent)',
-                border: '1px solid var(--accent-border)',
-              }}
-            >
-              {name}
-            </button>
-          ))}
+        <div className="relative">
+          <select
+            value={selectedGroup}
+            onChange={(e) => setSelectedGroup(e.target.value)}
+            className="w-full appearance-none rounded-xl px-4 py-3 pr-10 text-sm font-bold transition-all"
+            style={{
+              background: 'var(--bg-card)',
+              color: 'var(--text)',
+              border: '1px solid var(--border-color)',
+              outline: 'none',
+            }}
+          >
+            {groups.map((g) => (
+              <option key={g.name} value={g.name} style={{ background: 'var(--bg-card)', color: 'var(--text)' }}>
+                Grupo {g.name}
+              </option>
+            ))}
+          </select>
+          <span
+            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs"
+            style={{ color: 'var(--accent)' }}
+          >
+            ▼
+          </span>
         </div>
       </div>
 
-      {/* All groups stacked */}
-      <div className="px-4 pt-4 space-y-4">
+      <div className="px-4 pt-4">
         {isLoading ? (
-          Array.from({ length: 4 }).map((_, i) => <GroupTableSkeleton key={i} />)
+          <GroupTableSkeleton />
         ) : (
-          groups.map((group) => (
-            <section
-              key={group.name}
-              id={`group-${group.name}`}
-              ref={(el) => { sectionRefs.current[group.name] = el; }}
-            >
-              <GroupTable group={group} matches={matches} bestThirds={bestThirds} />
-            </section>
+          visibleGroups.map((group) => (
+            <GroupTable key={group.name} group={group} matches={matches} bestThirds={bestThirds} />
           ))
         )}
       </div>
