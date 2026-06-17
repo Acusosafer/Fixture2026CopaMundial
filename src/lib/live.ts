@@ -98,15 +98,17 @@ export const TLA_TO_CODE: Record<string, string> = {
   DEN: 'DK', ALB: 'AL', TUR: 'TR', BIH: 'BA', SWE: 'SE',
   SUI: 'CH', CZE: 'CZ', AUT: 'AT', POL: 'PL',
   ENG: 'GB-ENG', SCO: 'GB-SCT', WAL: 'GB-WLS',
+  NOR: 'NO',
   // África
   MAR: 'MA', NGA: 'NG', SEN: 'SN', CMR: 'CM',
   CIV: 'CI', KEN: 'KE', TUN: 'TN', EGY: 'EG',
   RSA: 'ZA', ALG: 'DZ', DZA: 'DZ', GHA: 'GH',
+  CPV: 'CV', COD: 'CD',
   // Asia / Oceanía
   JPN: 'JP', KOR: 'KR', AUS: 'AU', IDN: 'ID',
   IRN: 'IR', CHN: 'CN', THA: 'TH', UZB: 'UZ',
-  BHR: 'BH', UAE: 'AE', SAU: 'SA', QAT: 'QA',
-  NZL: 'NZ', JOR: 'JO',
+  BHR: 'BH', UAE: 'AE', SAU: 'SA', KSA: 'SA', QAT: 'QA',
+  NZL: 'NZ', JOR: 'JO', IRQ: 'IQ',
 };
 
 // ─── Helper: ¿hay partidos del Mundial en las próximas 2h? ──
