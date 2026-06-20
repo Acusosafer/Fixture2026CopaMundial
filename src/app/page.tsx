@@ -276,7 +276,7 @@ export default function HomePage() {
 
           {/* Countdown */}
           <motion.div variants={fadeInUp} transition={{ type: 'spring', stiffness: 260, damping: 24 }}>
-            <CountdownHero targetDate={nextMatchDate} label={countdownLabel} />
+            <CountdownHero targetDate={nextMatchDate} label={countdownLabel} white />
           </motion.div>
         </motion.div>
       </section>

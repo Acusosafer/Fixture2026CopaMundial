@@ -6,6 +6,7 @@ import { AnimateNumber } from '@/components/ui/animated-blur-number';
 interface CountdownHeroProps {
   targetDate: Date;
   label: string;
+  white?: boolean;
 }
 
 interface TimeLeft { days: number; hours: number; minutes: number; seconds: number; }
@@ -26,7 +27,7 @@ const digitLabels: Record<keyof TimeLeft, string> = {
 };
 
 
-export function CountdownHero({ targetDate, label }: CountdownHeroProps) {
+export function CountdownHero({ targetDate, label, white = false }: CountdownHeroProps) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export function CountdownHero({ targetDate, label }: CountdownHeroProps) {
   const isUrgent = minutesRemaining <= 60;
   const isPulsing = minutesRemaining <= 5;
 
-  const accent = isUrgent ? 'var(--ember)' : 'var(--accent)';
+  const accent = white ? '#ffffff' : isUrgent ? 'var(--ember)' : 'var(--accent)';
 
   return (
     <div className="cd-hero">
