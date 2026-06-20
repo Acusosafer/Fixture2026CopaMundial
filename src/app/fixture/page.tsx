@@ -175,28 +175,49 @@ export default function FixturePage() {
           </button>
         </div>
 
-        {/* Filter chips */}
-        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+        {/* Filter row */}
+        <div className="flex items-center gap-2">
           <FilterChip
             label="Hoy"
             active={activeFilter === 'today'}
-            onClick={() => setActiveFilter('today')}
+            onClick={() => setActiveFilter(activeFilter === 'today' ? 'all' : 'today')}
           />
-
-          {/* Group divider label */}
-          <span className="flex-shrink-0 self-center text-[10px] px-1" style={{ color: 'var(--text-mute)' }}>
-            Grupo:
-          </span>
-
-          {GROUPS.map((g) => (
-            <FilterChip
-              key={g}
-              label={g}
-              active={activeFilter === g}
-              onClick={() => setActiveFilter(activeFilter === g ? 'all' : g)}
-            />
-          ))}
-
+          <div className="relative flex-1">
+            <select
+              value={GROUPS.includes(activeFilter as (typeof GROUPS)[number]) ? activeFilter : ''}
+              onChange={(e) => setActiveFilter((e.target.value as FilterValue) || 'all')}
+              className="w-full appearance-none rounded-full px-3.5 py-1.5 pr-8 text-xs font-semibold transition-all"
+              style={{
+                background: GROUPS.includes(activeFilter as (typeof GROUPS)[number]) ? 'var(--accent)' : 'var(--border-subtle)',
+                color: GROUPS.includes(activeFilter as (typeof GROUPS)[number]) ? 'var(--accent-fg)' : 'var(--text-dim)',
+                border: GROUPS.includes(activeFilter as (typeof GROUPS)[number]) ? 'none' : '1px solid var(--border-color)',
+                outline: 'none',
+              }}
+            >
+              <option value="" style={{ background: 'var(--bg-card)', color: 'var(--text)' }}>Grupo: todos</option>
+              {GROUPS.map((g) => (
+                <option key={g} value={g} style={{ background: 'var(--bg-card)', color: 'var(--text)' }}>
+                  Grupo {g}
+                </option>
+              ))}
+            </select>
+            <span
+              className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px]"
+              style={{ color: GROUPS.includes(activeFilter as (typeof GROUPS)[number]) ? 'var(--accent-fg)' : 'var(--text-dim)' }}
+            >
+              ▼
+            </span>
+          </div>
+          {GROUPS.includes(activeFilter as (typeof GROUPS)[number]) && (
+            <button
+              onClick={() => setActiveFilter('all')}
+              className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all active:scale-95"
+              style={{ background: 'var(--border-subtle)', color: 'var(--text-dim)', border: '1px solid var(--border-color)' }}
+              aria-label="Limpiar filtro de grupo"
+            >
+              ✕
+            </button>
+          )}
         </div>
       </div>
 

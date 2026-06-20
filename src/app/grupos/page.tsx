@@ -44,7 +44,7 @@ function get3rdPlace(group: Group, matches: StaticMatch[]): ThirdStats | null {
 
 export default function GruposPage() {
   const { matches, isLoading } = useFixtures();
-  const [selectedGroup, setSelectedGroup] = useState<string>('A');
+  const [selectedGroup, setSelectedGroup] = useState<string | null>('A');
 
   const bestThirds = useMemo<Set<string>>(() => {
     const thirds: ThirdStats[] = [];
@@ -61,7 +61,7 @@ export default function GruposPage() {
     return new Set(thirds.slice(0, 8).map((t) => t.code));
   }, [matches]);
 
-  const visibleGroups = groups.filter((g) => g.name === selectedGroup);
+  const visibleGroups = selectedGroup ? groups.filter((g) => g.name === selectedGroup) : groups;
 
   return (
     <main className="min-h-screen pb-24" style={{ background: 'var(--bg)' }}>
@@ -73,34 +73,53 @@ export default function GruposPage() {
         <h1 className="font-heading text-4xl tracking-wide mb-3" style={{ color: 'var(--text)' }}>
           GRUPOS
         </h1>
-        <div className="relative">
-          <select
-            value={selectedGroup}
-            onChange={(e) => setSelectedGroup(e.target.value)}
-            className="w-full appearance-none rounded-xl px-4 py-3 pr-10 text-sm font-bold transition-all"
-            style={{
-              background: 'var(--bg-card)',
-              color: 'var(--text)',
-              border: '1px solid var(--border-color)',
-              outline: 'none',
-            }}
-          >
-            {groups.map((g) => (
-              <option key={g.name} value={g.name} style={{ background: 'var(--bg-card)', color: 'var(--text)' }}>
-                Grupo {g.name}
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <select
+              value={selectedGroup ?? ''}
+              onChange={(e) => setSelectedGroup(e.target.value || null)}
+              className="w-full appearance-none rounded-xl px-4 py-3 pr-10 text-sm font-bold transition-all"
+              style={{
+                background: 'var(--bg-card)',
+                color: 'var(--text)',
+                border: '1px solid var(--border-color)',
+                outline: 'none',
+              }}
+            >
+              <option value="" style={{ background: 'var(--bg-card)', color: 'var(--text)' }}>
+                Todos los grupos
               </option>
-            ))}
-          </select>
-          <span
-            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs"
-            style={{ color: 'var(--accent)' }}
-          >
-            ▼
-          </span>
+              {groups.map((g) => (
+                <option key={g.name} value={g.name} style={{ background: 'var(--bg-card)', color: 'var(--text)' }}>
+                  Grupo {g.name}
+                </option>
+              ))}
+            </select>
+            <span
+              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs"
+              style={{ color: 'var(--accent)' }}
+            >
+              ▼
+            </span>
+          </div>
+          {selectedGroup && (
+            <button
+              onClick={() => setSelectedGroup(null)}
+              className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold transition-all active:scale-95"
+              style={{
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-dim)',
+              }}
+              aria-label="Ver todos los grupos"
+            >
+              ✕
+            </button>
+          )}
         </div>
       </div>
 
-      <div className="px-4 pt-4">
+      <div className="px-4 pt-4 space-y-4">
         {isLoading ? (
           <GroupTableSkeleton />
         ) : (

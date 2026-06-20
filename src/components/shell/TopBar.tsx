@@ -12,7 +12,7 @@ function TeamChip({ teamCode }: { teamCode: string }) {
   return (
     <Link
       href="/seleccion"
-      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all active:scale-95"
+      className="flex items-center gap-2 px-2.5 py-1.5 rounded-full text-xs font-semibold transition-all active:scale-95"
       style={{
         background: 'var(--accent-dim)',
         border: '1px solid var(--accent-border)',
@@ -20,7 +20,7 @@ function TeamChip({ teamCode }: { teamCode: string }) {
       }}
     >
       {team?.flagUrl ? (
-        <div className="relative overflow-hidden rounded-sm flex-shrink-0" style={{ width: 20, height: 14 }}>
+        <div className="relative overflow-hidden rounded-full flex-shrink-0" style={{ width: 22, height: 22 }}>
           <Image src={team.flagUrl} alt={team.nameEs} fill className="object-cover" unoptimized />
         </div>
       ) : null}
