@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Calendar, MapPin, ChevronRight, Trophy } from 'lucide-react';
 import { staticMatches } from '@/lib/fixtures-static';
+import { getTeamByCode } from '@/lib/teams';
 
 // ── Round config ──────────────────────────────────────────────────────────────
 
@@ -41,7 +43,8 @@ function teamLabel(code: string): string {
     const groups = code.slice(1).split('');
     return `${pos}° 3ro (${groups.join('/')})`;
   }
-  return code;
+  const team = getTeamByCode(code);
+  return team ? team.nameEs : code;
 }
 
 // ── Tournament flow bar ───────────────────────────────────────────────────────
@@ -148,6 +151,36 @@ function TournamentFlow({ activeKey, onSelect }: { activeKey: RoundKey; onSelect
 
 // ── Match card ────────────────────────────────────────────────────────────────
 
+function TeamSide({ code, align }: { code: string; align: 'left' | 'right' }) {
+  const team = getTeamByCode(code);
+  const isPlaceholder = !code || code === 'TBD' || /^[W1-3]/.test(code);
+
+  if (team) {
+    return (
+      <div className={`flex items-center gap-2 flex-1 min-w-0 ${align === 'right' ? 'flex-row-reverse' : ''}`}>
+        <div className="relative overflow-hidden rounded-sm flex-shrink-0" style={{ width: 26, height: 17 }}>
+          <Image src={team.flagUrl} alt={team.nameEs} fill className="object-cover" unoptimized />
+        </div>
+        <span
+          className={`text-sm font-bold truncate ${align === 'right' ? 'text-right' : ''}`}
+          style={{ color: 'var(--text)' }}
+        >
+          {team.nameEs}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <span
+      className={`text-sm font-bold flex-1 truncate ${align === 'right' ? 'text-right' : ''}`}
+      style={{ color: isPlaceholder ? 'var(--text-mute)' : 'var(--text)' }}
+    >
+      {teamLabel(code)}
+    </span>
+  );
+}
+
 function MatchRow({ id, home, away, date, venue, roundColor }: {
   id: number;
   home: string;
@@ -156,8 +189,6 @@ function MatchRow({ id, home, away, date, venue, roundColor }: {
   venue: string;
   roundColor: string;
 }) {
-  const isTBD = (c: string) => !c || c === 'TBD' || /^[W1-3]/.test(c);
-
   return (
     <Link
       href={`/partido/${id}`}
@@ -169,9 +200,7 @@ function MatchRow({ id, home, away, date, venue, roundColor }: {
       }}
     >
       <div className="flex items-center gap-2">
-        <span className="text-sm font-bold flex-1 truncate" style={{ color: isTBD(home) ? 'var(--text-mute)' : 'var(--text)' }}>
-          {teamLabel(home)}
-        </span>
+        <TeamSide code={home} align="left" />
         <span
           className="text-[11px] font-black px-2.5 py-1 rounded-lg tabular-nums shrink-0"
           style={{
@@ -182,9 +211,7 @@ function MatchRow({ id, home, away, date, venue, roundColor }: {
         >
           VS
         </span>
-        <span className="text-sm font-bold flex-1 truncate text-right" style={{ color: isTBD(away) ? 'var(--text-mute)' : 'var(--text)' }}>
-          {teamLabel(away)}
-        </span>
+        <TeamSide code={away} align="right" />
       </div>
 
       <div className="flex items-center justify-between gap-2">
