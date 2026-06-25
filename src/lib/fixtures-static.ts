@@ -156,9 +156,9 @@ export const staticMatches: StaticMatch[] = [
   // Confirmados al 25-jun: 1A=MX, 2A=ZA, 1B=CH, 1C=BR, 2C=MA, 1D=US, 1J=AR, 1K=CO
   { id: 73, homeTeamCode: 'ZA',  awayTeamCode: 'CA',     date: '2026-06-28T19:00:00Z', venue: 'Estadio Los Ángeles', stadiumId: 'sofi', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
   { id: 74, homeTeamCode: 'BR',  awayTeamCode: '2F',     date: '2026-06-29T17:00:00Z', venue: 'Estadio Houston', stadiumId: 'nrg', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
-  { id: 75, homeTeamCode: '1E',  awayTeamCode: '3ABCDF', date: '2026-06-29T20:30:00Z', venue: 'Estadio Boston', stadiumId: 'gillette', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
+  { id: 75, homeTeamCode: 'DE',  awayTeamCode: '3ABCDF', date: '2026-06-29T20:30:00Z', venue: 'Estadio Boston', stadiumId: 'gillette', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
   { id: 76, homeTeamCode: '1F',  awayTeamCode: 'MA',     date: '2026-06-30T01:00:00Z', venue: 'Estadio Monterrey', stadiumId: 'bbva', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
-  { id: 77, homeTeamCode: '2E',  awayTeamCode: '2I',     date: '2026-06-30T17:00:00Z', venue: 'Estadio Dallas', stadiumId: 'att', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
+  { id: 77, homeTeamCode: 'CI',  awayTeamCode: '2I',     date: '2026-06-30T17:00:00Z', venue: 'Estadio Dallas', stadiumId: 'att', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
   { id: 78, homeTeamCode: '1I',  awayTeamCode: '3CDFGH', date: '2026-06-30T21:00:00Z', venue: 'Estadio Nueva York/Nueva Jersey', stadiumId: 'metlife', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
   { id: 79, homeTeamCode: 'MX',  awayTeamCode: '3CEFHI', date: '2026-07-01T01:00:00Z', venue: 'Estadio Ciudad de México', stadiumId: 'azteca', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
   { id: 80, homeTeamCode: '1L',  awayTeamCode: '3EHIJK', date: '2026-07-01T16:00:00Z', venue: 'Estadio Atlanta', stadiumId: 'mercedes-benz', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
