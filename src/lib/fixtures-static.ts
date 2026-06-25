@@ -154,7 +154,7 @@ export const staticMatches: StaticMatch[] = [
 
   // ── Dieciseisavos de final (Round of 32) ─────────────────
   // Confirmados al 25-jun: 1A=MX, 2A=ZA, 1B=CH, 1C=BR, 2C=MA, 1D=US, 1J=AR, 1K=CO
-  { id: 73, homeTeamCode: 'ZA',  awayTeamCode: '2B',     date: '2026-06-28T19:00:00Z', venue: 'Estadio Los Ángeles', stadiumId: 'sofi', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
+  { id: 73, homeTeamCode: 'ZA',  awayTeamCode: 'CA',     date: '2026-06-28T19:00:00Z', venue: 'Estadio Los Ángeles', stadiumId: 'sofi', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
   { id: 74, homeTeamCode: 'BR',  awayTeamCode: '2F',     date: '2026-06-29T17:00:00Z', venue: 'Estadio Houston', stadiumId: 'nrg', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
   { id: 75, homeTeamCode: '1E',  awayTeamCode: '3ABCDF', date: '2026-06-29T20:30:00Z', venue: 'Estadio Boston', stadiumId: 'gillette', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
   { id: 76, homeTeamCode: '1F',  awayTeamCode: 'MA',     date: '2026-06-30T01:00:00Z', venue: 'Estadio Monterrey', stadiumId: 'bbva', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
