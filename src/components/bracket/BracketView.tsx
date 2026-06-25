@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Calendar, MapPin, ChevronRight, Trophy } from 'lucide-react';
 import { staticMatches } from '@/lib/fixtures-static';
 import { getTeamByCode } from '@/lib/teams';
+import { useBracketResolution } from '@/hooks/useBracketResolution';
 
 // ── Round config ──────────────────────────────────────────────────────────────
 
@@ -181,14 +182,18 @@ function TeamSide({ code, align }: { code: string; align: 'left' | 'right' }) {
   );
 }
 
-function MatchRow({ id, home, away, date, venue, roundColor }: {
+function MatchRow({ id, home, away, date, venue, roundColor, resolution }: {
   id: number;
   home: string;
   away: string;
   date: string;
   venue: string;
   roundColor: string;
+  resolution: Map<string, string>;
 }) {
+  const resolvedHome = resolution.get(home) ?? home;
+  const resolvedAway = resolution.get(away) ?? away;
+
   return (
     <Link
       href={`/partido/${id}`}
@@ -200,7 +205,7 @@ function MatchRow({ id, home, away, date, venue, roundColor }: {
       }}
     >
       <div className="flex items-center gap-2">
-        <TeamSide code={home} align="left" />
+        <TeamSide code={resolvedHome} align="left" />
         <span
           className="text-[11px] font-black px-2.5 py-1 rounded-lg tabular-nums shrink-0"
           style={{
@@ -211,7 +216,7 @@ function MatchRow({ id, home, away, date, venue, roundColor }: {
         >
           VS
         </span>
-        <TeamSide code={away} align="right" />
+        <TeamSide code={resolvedAway} align="right" />
       </div>
 
       <div className="flex items-center justify-between gap-2">
@@ -234,6 +239,7 @@ function MatchRow({ id, home, away, date, venue, roundColor }: {
 
 export function BracketView() {
   const [activeRound, setActiveRound] = useState<RoundKey>('R32');
+  const resolution = useBracketResolution();
 
   const round        = ROUNDS.find((r) => r.key === activeRound)!;
   const roundMatches = staticMatches.filter((m) => m.group === activeRound);
@@ -283,6 +289,7 @@ export function BracketView() {
               date={m.date}
               venue={m.venue}
               roundColor={round.color}
+              resolution={resolution}
             />
           ))
         ) : (
