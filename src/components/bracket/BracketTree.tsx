@@ -8,15 +8,19 @@ import { getTeamByCode } from '@/lib/teams';
 import { useBracketResolution, type BracketResolution } from '@/hooks/useBracketResolution';
 
 // ── Layout ─────────────────────────────────────────────────────────────────────
-const SH   = 64;          // R32 slot height
-const CH   = 46;          // card height
-const CW   = 112;         // card width
-const CGW  = 20;          // connector gap between columns
-const TH   = 8 * SH;     // total height = 512
-const STEP = CW + CGW;    // column step = 132
-const HALF_W = 4 * STEP - CGW; // 4*132 - 20 = 508
+const SH        = 74;          // R32 slot height
+const CH        = 62;          // card height total
+const DATE_H    = 15;          // date row height
+const TEAM_H    = Math.floor((CH - DATE_H - 2) / 2); // ~22px per team row
+const CW        = 112;         // card width
+const CGW       = 20;          // connector gap between columns
+const TH        = 8 * SH;     // total height = 592
+const STEP      = CW + CGW;    // column step = 132
+const HALF_W    = 4 * STEP - CGW; // 4*132 - 20 = 508
 
 const LINE = 'rgba(255,255,255,0.2)';
+const ART  = -3 * 60 * 60 * 1000;
+const MONTHS = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 
 function slotH(r: number) { return SH * (1 << r); }
 
@@ -27,6 +31,13 @@ function cardTop(r: number, i: number): number {
 
 function cardMidY(r: number, i: number): number {
   return cardTop(r, i) + Math.floor(CH / 2);
+}
+
+function fmtDate(iso: string): string {
+  const d = new Date(new Date(iso).getTime() + ART);
+  const h  = d.getUTCHours().toString().padStart(2, '0');
+  const mi = d.getUTCMinutes().toString().padStart(2, '0');
+  return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} · ${h}:${mi}`;
 }
 
 // ── Label helper ───────────────────────────────────────────────────────────────
@@ -47,13 +58,12 @@ function BTeam({ code, resolution }: { code: string; resolution: BracketResoluti
   const isPredicted = !isConfirmed && predicted.has(code);
   const resolved = confirmed.get(code) ?? predicted.get(code) ?? code;
   const team = getTeamByCode(resolved);
-  const rowH = CH / 2;
 
   if (team) {
     return (
       <div
         className="flex items-center gap-1.5 px-2 min-w-0"
-        style={{ height: rowH, opacity: isPredicted ? 0.6 : 1 }}
+        style={{ height: TEAM_H, opacity: isPredicted ? 0.62 : 1 }}
       >
         <div
           className="relative flex-shrink-0 overflow-hidden"
@@ -80,7 +90,7 @@ function BTeam({ code, resolution }: { code: string; resolution: BracketResoluti
   }
 
   return (
-    <div className="flex items-center px-2 min-w-0" style={{ height: rowH }}>
+    <div className="flex items-center px-2 min-w-0" style={{ height: TEAM_H }}>
       <span className="text-[8.5px] truncate leading-none" style={{ color: 'var(--text-mute)' }}>
         {labelCode(resolved)}
       </span>
@@ -115,10 +125,20 @@ function BCard({
       }}
     >
       <BTeam code={m.homeTeamCode} resolution={resolution} />
-      <div
-        style={{ height: 1, background: 'rgba(255,255,255,0.08)', flexShrink: 0 }}
-      />
+      <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
       <BTeam code={m.awayTeamCode} resolution={resolution} />
+      <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', flexShrink: 0 }} />
+      <div
+        className="flex items-center px-2"
+        style={{ height: DATE_H, background: 'rgba(0,0,0,0.18)' }}
+      >
+        <span
+          className="truncate leading-none tabular-nums"
+          style={{ fontSize: 8, color: gold ? 'rgba(255,215,0,0.7)' : 'var(--text-mute)' }}
+        >
+          {fmtDate(m.date)}
+        </span>
+      </div>
     </Link>
   );
 }
