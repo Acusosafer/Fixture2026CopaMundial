@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Trophy } from 'lucide-react';
 import { staticMatches } from '@/lib/fixtures-static';
 import { getTeamByCode } from '@/lib/teams';
-import { useBracketResolution } from '@/hooks/useBracketResolution';
+import { useBracketResolution, type BracketResolution } from '@/hooks/useBracketResolution';
 
 // ── Layout ─────────────────────────────────────────────────────────────────────
 const SH   = 64;          // R32 slot height
@@ -41,14 +41,20 @@ function labelCode(code: string): string {
 }
 
 // ── Team row inside a card ─────────────────────────────────────────────────────
-function BTeam({ code, resolution }: { code: string; resolution: Map<string, string> }) {
-  const resolved = resolution.get(code) ?? code;
+function BTeam({ code, resolution }: { code: string; resolution: BracketResolution }) {
+  const { confirmed, predicted } = resolution;
+  const isConfirmed = confirmed.has(code);
+  const isPredicted = !isConfirmed && predicted.has(code);
+  const resolved = confirmed.get(code) ?? predicted.get(code) ?? code;
   const team = getTeamByCode(resolved);
   const rowH = CH / 2;
 
   if (team) {
     return (
-      <div className="flex items-center gap-1.5 px-2 min-w-0" style={{ height: rowH }}>
+      <div
+        className="flex items-center gap-1.5 px-2 min-w-0"
+        style={{ height: rowH, opacity: isPredicted ? 0.6 : 1 }}
+      >
         <div
           className="relative flex-shrink-0 overflow-hidden"
           style={{ width: 17, height: 11, borderRadius: 2 }}
@@ -56,11 +62,19 @@ function BTeam({ code, resolution }: { code: string; resolution: Map<string, str
           <Image src={team.flagUrl} alt="" fill className="object-cover" unoptimized />
         </div>
         <span
-          className="text-[9.5px] font-bold truncate leading-none"
-          style={{ color: 'var(--text)' }}
+          className="truncate leading-none"
+          style={{
+            fontSize: '9.5px',
+            fontWeight: isPredicted ? 400 : 700,
+            fontStyle: isPredicted ? 'italic' : 'normal',
+            color: isPredicted ? 'var(--text-dim)' : 'var(--text)',
+          }}
         >
           {team.nameEs}
         </span>
+        {isPredicted && (
+          <span style={{ fontSize: 8, color: 'var(--text-mute)', flexShrink: 0 }}>?</span>
+        )}
       </div>
     );
   }
@@ -81,7 +95,7 @@ function BCard({
   gold,
 }: {
   id: number;
-  resolution: Map<string, string>;
+  resolution: BracketResolution;
   gold?: boolean;
 }) {
   const m = staticMatches.find((x) => x.id === id);
@@ -195,7 +209,7 @@ function Half({
   resolution,
 }: {
   side: 'left' | 'right';
-  resolution: Map<string, string>;
+  resolution: BracketResolution;
 }) {
   const rounds = side === 'left' ? LEFT_ROUNDS : RIGHT_ROUNDS;
 
@@ -237,7 +251,7 @@ function Half({
 
 const FINAL_GAP = 18; // connector width from SF to Final
 
-function FinalSection({ resolution }: { resolution: Map<string, string> }) {
+function FinalSection({ resolution }: { resolution: BracketResolution }) {
   const topCard = Math.floor(TH / 2 - CH / 2);
   const yM = TH / 2;
 

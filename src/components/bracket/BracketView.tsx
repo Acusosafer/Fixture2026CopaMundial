@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Calendar, MapPin, ChevronRight, Trophy } from 'lucide-react';
 import { staticMatches } from '@/lib/fixtures-static';
 import { getTeamByCode } from '@/lib/teams';
-import { useBracketResolution } from '@/hooks/useBracketResolution';
+import { useBracketResolution, type BracketResolution } from '@/hooks/useBracketResolution';
 
 // ── Round config ──────────────────────────────────────────────────────────────
 
@@ -189,10 +189,11 @@ function MatchRow({ id, home, away, date, venue, roundColor, resolution }: {
   date: string;
   venue: string;
   roundColor: string;
-  resolution: Map<string, string>;
+  resolution: BracketResolution;
 }) {
-  const resolvedHome = resolution.get(home) ?? home;
-  const resolvedAway = resolution.get(away) ?? away;
+  const { confirmed, predicted } = resolution;
+  const resolvedHome = confirmed.get(home) ?? predicted.get(home) ?? home;
+  const resolvedAway = confirmed.get(away) ?? predicted.get(away) ?? away;
 
   return (
     <Link
@@ -239,7 +240,7 @@ function MatchRow({ id, home, away, date, venue, roundColor, resolution }: {
 
 export function BracketView() {
   const [activeRound, setActiveRound] = useState<RoundKey>('R32');
-  const resolution = useBracketResolution();
+  const resolution = useBracketResolution(); // BracketResolution { confirmed, predicted }
 
   const round        = ROUNDS.find((r) => r.key === activeRound)!;
   const roundMatches = staticMatches.filter((m) => m.group === activeRound);
