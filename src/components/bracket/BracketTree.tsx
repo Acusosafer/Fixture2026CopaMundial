@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Trophy } from 'lucide-react';
 import { staticMatches } from '@/lib/fixtures-static';
 import { getTeamByCode } from '@/lib/teams';
 import { useBracketResolution, type BracketResolution } from '@/hooks/useBracketResolution';
@@ -269,11 +268,14 @@ function Half({
 
 // ── Final section ──────────────────────────────────────────────────────────────
 
-const FINAL_GAP = 18; // connector width from SF to Final
+const FINAL_GAP  = 18;
+const TROPHY_H   = 56;  // Copa del Mundo image height above the card
+const TROPHY_PAD = 4;
 
 function FinalSection({ resolution }: { resolution: BracketResolution }) {
-  const topCard = Math.floor(TH / 2 - CH / 2);
-  const yM = TH / 2;
+  const topCard  = Math.floor(TH / 2 - CH / 2);
+  const yM       = TH / 2;
+  const trophyTop = topCard - TROPHY_H - TROPHY_PAD;
 
   return (
     <div
@@ -295,18 +297,19 @@ function FinalSection({ resolution }: { resolution: BracketResolution }) {
         />
       </svg>
 
-      {/* Trophy + label above card */}
+      {/* Copa del Mundo real */}
       <div
-        className="absolute flex flex-col items-center gap-0.5"
-        style={{ left: FINAL_GAP, width: CW, top: topCard - 26 }}
+        className="absolute flex items-end justify-center"
+        style={{ left: FINAL_GAP, width: CW, top: trophyTop, height: TROPHY_H }}
       >
-        <Trophy size={13} color="#FFD700" />
-        <span
-          className="text-[8px] font-black uppercase tracking-widest"
-          style={{ color: '#FFD700', opacity: 0.85 }}
-        >
-          Final
-        </span>
+        <Image
+          src="/trophy.png"
+          alt="Copa del Mundo"
+          width={42}
+          height={TROPHY_H}
+          className="object-contain drop-shadow-[0_0_12px_rgba(255,215,0,0.5)]"
+          unoptimized
+        />
       </div>
 
       {/* Final card */}
@@ -329,6 +332,28 @@ function FinalSection({ resolution }: { resolution: BracketResolution }) {
           strokeLinecap="round"
         />
       </svg>
+    </div>
+  );
+}
+
+// ── Branding header ────────────────────────────────────────────────────────────
+
+function BracketBranding() {
+  const totalW = HALF_W * 2 + CW + FINAL_GAP * 2;
+  return (
+    <div
+      className="flex items-center justify-center gap-2 mb-3 flex-shrink-0"
+      style={{ width: totalW }}
+    >
+      <div className="relative flex-shrink-0" style={{ width: 52, height: 22 }}>
+        <Image src="/trionda.png" alt="FAS Analytics" fill className="object-contain" unoptimized />
+      </div>
+      <span
+        className="text-[9px] font-bold tracking-[0.2em] uppercase"
+        style={{ color: 'var(--text-mute)', opacity: 0.55 }}
+      >
+        FAS Analytics
+      </span>
     </div>
   );
 }
@@ -400,6 +425,7 @@ export function BracketTree() {
   return (
     <div className="overflow-x-auto -mx-4 px-4 pb-4 select-none">
       <div style={{ minWidth: 'max-content' }}>
+        <BracketBranding />
         <LabelsRow />
         <div className="flex items-stretch">
           <Half side="left" resolution={resolution} />
