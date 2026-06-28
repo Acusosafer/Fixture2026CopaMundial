@@ -20,7 +20,7 @@ export const PREDICTED_TEAMS: Record<string, string> = {
   '2D': 'AU',       // Australia 2do Grupo D (no Turquía)
   '2F': 'JP',       // Japón 2do Grupo F (no Suecia)
   '2G': 'EG',
-  '2H': 'UY',
+  '2H': 'CV',       // Cabo Verde 2do Grupo H
   '2I': 'NO',
   '2J': 'AT',
   '2K': 'PT',       // Portugal 2do Grupo K (no Colombia)

@@ -210,8 +210,8 @@ function Connector({
 // ── Half bracket ───────────────────────────────────────────────────────────────
 
 const LEFT_ROUNDS: { r: number; ids: number[] }[] = [
-  { r: 0, ids: [73, 75, 74, 77, 83, 84, 81, 82] },
-  { r: 1, ids: [89, 90, 93, 94] },
+  { r: 0, ids: [75, 78, 73, 76, 84, 83, 82, 81] },
+  { r: 1, ids: [89, 91, 93, 94] },
   { r: 2, ids: [97, 98] },
   { r: 3, ids: [101] },
 ];
@@ -219,8 +219,8 @@ const LEFT_ROUNDS: { r: number; ids: number[] }[] = [
 const RIGHT_ROUNDS: { r: number; ids: number[] }[] = [
   { r: 3, ids: [102] },
   { r: 2, ids: [99, 100] },
-  { r: 1, ids: [91, 92, 95, 96] },
-  { r: 0, ids: [76, 78, 79, 80, 86, 88, 85, 87] },
+  { r: 1, ids: [90, 92, 95, 96] },
+  { r: 0, ids: [74, 77, 79, 80, 87, 86, 85, 88] },
 ];
 
 function Half({
@@ -269,8 +269,8 @@ function Half({
 // ── Final section ──────────────────────────────────────────────────────────────
 
 const FINAL_GAP  = 18;
-const TROPHY_H   = 56;  // Copa del Mundo image height above the card
-const TROPHY_PAD = 4;
+const TROPHY_H   = 96;
+const TROPHY_PAD = 6;
 
 function FinalSection({ resolution }: { resolution: BracketResolution }) {
   const topCard  = Math.floor(TH / 2 - CH / 2);
@@ -305,9 +305,9 @@ function FinalSection({ resolution }: { resolution: BracketResolution }) {
         <Image
           src="/trophy.png"
           alt="Copa del Mundo"
-          width={42}
+          width={72}
           height={TROPHY_H}
-          className="object-contain drop-shadow-[0_0_12px_rgba(255,215,0,0.5)]"
+          className="object-contain drop-shadow-[0_0_16px_rgba(255,215,0,0.7)]"
           unoptimized
         />
       </div>
@@ -346,7 +346,7 @@ function BracketBranding() {
       style={{ width: totalW }}
     >
       <div className="relative flex-shrink-0" style={{ width: 52, height: 22 }}>
-        <Image src="/trionda.png" alt="FAS Analytics" fill className="object-contain" unoptimized />
+        <Image src="/LogoFAS.jpeg" alt="FAS Analytics" fill className="object-contain" unoptimized />
       </div>
       <span
         className="text-[9px] font-bold tracking-[0.2em] uppercase"
@@ -367,53 +367,70 @@ function LabelsRow() {
   const totalW = HALF_W * 2 + CW + FINAL_GAP * 2;
 
   return (
-    <div
-      className="flex items-center flex-shrink-0 mb-2"
-      style={{ width: totalW }}
-    >
-      {/* Left labels */}
-      {LEFT_LABELS.map((lbl, i) => (
+    <div className="flex flex-col flex-shrink-0 mb-2" style={{ width: totalW }}>
+      {/* LADO A / LADO B header */}
+      <div className="flex items-center mb-1" style={{ width: totalW }}>
         <div
-          key={lbl}
-          className="text-center text-[8px] font-semibold uppercase tracking-wider flex-shrink-0"
-          style={{
-            width: CW,
-            marginRight: i < 3 ? CGW : 0,
-            color: 'var(--text-mute)',
-            opacity: 0.55,
-          }}
+          className="text-center text-[9px] font-black uppercase tracking-widest flex-shrink-0"
+          style={{ width: HALF_W, color: 'var(--accent)', opacity: 0.75 }}
         >
-          {lbl}
+          Lado A
         </div>
-      ))}
-
-      {/* Final label */}
-      <div
-        className="text-center text-[8px] font-black uppercase tracking-wider flex-shrink-0"
-        style={{
-          width: CW + FINAL_GAP * 2,
-          color: '#FFD700',
-          opacity: 0.7,
-        }}
-      >
-        Final · 19 jul
+        <div style={{ width: CW + FINAL_GAP * 2 }} />
+        <div
+          className="text-center text-[9px] font-black uppercase tracking-widest flex-shrink-0"
+          style={{ width: HALF_W, color: 'var(--accent)', opacity: 0.75 }}
+        >
+          Lado B
+        </div>
       </div>
 
-      {/* Right labels */}
-      {RIGHT_LABELS.map((lbl, i) => (
+      {/* Round labels */}
+      <div className="flex items-center" style={{ width: totalW }}>
+        {/* Left labels */}
+        {LEFT_LABELS.map((lbl, i) => (
+          <div
+            key={lbl}
+            className="text-center text-[8px] font-semibold uppercase tracking-wider flex-shrink-0"
+            style={{
+              width: CW,
+              marginRight: i < 3 ? CGW : 0,
+              color: 'var(--text-mute)',
+              opacity: 0.55,
+            }}
+          >
+            {lbl}
+          </div>
+        ))}
+
+        {/* Final label */}
         <div
-          key={lbl}
-          className="text-center text-[8px] font-semibold uppercase tracking-wider flex-shrink-0"
+          className="text-center text-[8px] font-black uppercase tracking-wider flex-shrink-0"
           style={{
-            width: CW,
-            marginLeft: i > 0 ? CGW : 0,
-            color: 'var(--text-mute)',
-            opacity: 0.55,
+            width: CW + FINAL_GAP * 2,
+            color: '#FFD700',
+            opacity: 0.7,
           }}
         >
-          {lbl}
+          Final · 19 jul
         </div>
-      ))}
+
+        {/* Right labels */}
+        {RIGHT_LABELS.map((lbl, i) => (
+          <div
+            key={lbl}
+            className="text-center text-[8px] font-semibold uppercase tracking-wider flex-shrink-0"
+            style={{
+              width: CW,
+              marginLeft: i > 0 ? CGW : 0,
+              color: 'var(--text-mute)',
+              opacity: 0.55,
+            }}
+          >
+            {lbl}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
