@@ -16,14 +16,15 @@ export function useBracketResolution(): BracketResolution {
 
   return useMemo(() => {
     const confirmed = resolveBracketCodes(staticMatches, scores);
-    const predicted = new Map<string, string>();
 
+    // Groups are complete — treat all PREDICTED_TEAMS as confirmed so
+    // the bracket shows real teams in bold (no italic/? styling).
     for (const [slot, team] of Object.entries(PREDICTED_TEAMS)) {
       if (!confirmed.has(slot)) {
-        predicted.set(slot, team);
+        confirmed.set(slot, team);
       }
     }
 
-    return { confirmed, predicted };
+    return { confirmed, predicted: new Map<string, string>() };
   }, [scores]);
 }

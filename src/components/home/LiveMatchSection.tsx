@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLiveScores } from '@/hooks/useLiveScores';
+import { useBracketResolution } from '@/hooks/useBracketResolution';
 import { staticMatches } from '@/lib/fixtures-static';
 import { getTeamByCode } from '@/lib/teams';
 import { isActiveStatus, type LiveScore } from '@/lib/live';
@@ -35,6 +36,8 @@ function yesterdayARTStr(): string {
 
 export function LiveMatchSection() {
   const { scores } = useLiveScores();
+  const { confirmed } = useBracketResolution();
+  const resolveCode = (code: string) => confirmed.get(code) ?? code;
 
   const yesterday = yesterdayARTStr();
 
@@ -88,8 +91,8 @@ export function LiveMatchSection() {
         </div>
 
         {liveMatches.map(({ match, score }) => {
-          const home = getTeamByCode(match.homeTeamCode);
-          const away = getTeamByCode(match.awayTeamCode);
+          const home = getTeamByCode(resolveCode(match.homeTeamCode));
+          const away = getTeamByCode(resolveCode(match.awayTeamCode));
           const isHalfTime = score.status === 'PAUSED' || score.status === 'PAUSED_ET';
           const isFinished = score.status === 'FINISHED';
           const isActive = isActiveStatus(score.status);

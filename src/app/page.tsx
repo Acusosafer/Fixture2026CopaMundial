@@ -315,9 +315,12 @@ function ElCaminoSection({
       transition={{ type: 'spring', stiffness: 260, damping: 24, delay: 0.5 }}
     >
       <div className="rounded-3xl p-4" style={cardStyle}>
-        <h2 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-dim)' }}>
-          El camino
-        </h2>
+        <Link href="/bracket" className="flex items-center justify-between mb-3 group">
+          <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-dim)' }}>
+            El camino
+          </h2>
+          <span className="text-xs font-semibold" style={{ color: 'var(--accent)' }}>Ver cruces →</span>
+        </Link>
         <div className="flex items-stretch gap-2 overflow-x-auto no-scrollbar">
           {steps.map((step, idx) => (
             <Link

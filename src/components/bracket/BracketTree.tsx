@@ -126,14 +126,14 @@ function BCard({
       <BTeam code={m.homeTeamCode} resolution={resolution} />
       <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
       <BTeam code={m.awayTeamCode} resolution={resolution} />
-      <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', flexShrink: 0 }} />
+      <div style={{ height: 1, background: 'rgba(128,128,128,0.12)', flexShrink: 0 }} />
       <div
         className="flex items-center px-2"
-        style={{ height: DATE_H, background: 'rgba(0,0,0,0.18)' }}
+        style={{ height: DATE_H, background: 'var(--surface)' }}
       >
         <span
           className="truncate leading-none tabular-nums"
-          style={{ fontSize: 8, color: gold ? 'rgba(255,215,0,0.7)' : 'var(--text-mute)' }}
+          style={{ fontSize: 8, color: gold ? 'rgba(255,215,0,0.8)' : 'var(--text-dim)' }}
         >
           {fmtDate(m.date)}
         </span>
@@ -269,8 +269,8 @@ function Half({
 // ── Final section ──────────────────────────────────────────────────────────────
 
 const FINAL_GAP  = 18;
-const TROPHY_H   = 96;
-const TROPHY_PAD = 6;
+const TROPHY_H   = 140;
+const TROPHY_PAD = 8;
 
 function FinalSection({ resolution }: { resolution: BracketResolution }) {
   const topCard  = Math.floor(TH / 2 - CH / 2);
@@ -305,9 +305,9 @@ function FinalSection({ resolution }: { resolution: BracketResolution }) {
         <Image
           src="/trophy.png"
           alt="Copa del Mundo"
-          width={72}
+          width={105}
           height={TROPHY_H}
-          className="object-contain drop-shadow-[0_0_16px_rgba(255,215,0,0.7)]"
+          className="object-contain drop-shadow-[0_0_20px_rgba(255,215,0,0.8)]"
           unoptimized
         />
       </div>
@@ -342,15 +342,12 @@ function BracketBranding() {
   const totalW = HALF_W * 2 + CW + FINAL_GAP * 2;
   return (
     <div
-      className="flex items-center justify-center gap-2 mb-3 flex-shrink-0"
+      className="flex items-center justify-center mb-3 flex-shrink-0"
       style={{ width: totalW }}
     >
-      <div className="relative flex-shrink-0" style={{ width: 52, height: 22 }}>
-        <Image src="/LogoFAS.jpeg" alt="FAS Analytics" fill className="object-contain" unoptimized />
-      </div>
       <span
-        className="text-[9px] font-bold tracking-[0.2em] uppercase"
-        style={{ color: 'var(--text-mute)', opacity: 0.55 }}
+        className="text-[9px] font-bold tracking-[0.25em] uppercase"
+        style={{ color: 'var(--text-dim)', opacity: 0.5 }}
       >
         FAS Analytics
       </span>

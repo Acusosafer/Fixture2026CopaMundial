@@ -1,5 +1,11 @@
 import { staticMatches } from '@/lib/fixtures-static';
+import { PREDICTED_TEAMS } from '@/lib/bracket-predictions';
 import { TLA_TO_CODE, type LiveScore, type MatchDetail, type MatchEvent, type MatchStats, type TeamLineup } from '@/lib/live';
+
+// Reverse map: teamCode → slot code (e.g. 'ZA' → '2A') for matching R32 bracket slots
+const TEAM_TO_SLOT = new Map<string, string>(
+  Object.entries(PREDICTED_TEAMS).map(([slot, team]) => [team, slot])
+);
 
 const BASE = 'https://site.api.espn.com/apis/site/v2/sports/soccer';
 const WC_SLUGS = ['fifa.world', 'world.cup'];
@@ -171,7 +177,12 @@ function parseESPNEvents(events: ESPNEvent[]): LiveScore[] {
 
     const homeCode = TLA_TO_CODE[home.team.abbreviation] ?? home.team.abbreviation;
     const awayCode = TLA_TO_CODE[away.team.abbreviation] ?? away.team.abbreviation;
-    const sm = staticMatches.find(m => m.homeTeamCode === homeCode && m.awayTeamCode === awayCode);
+    const homeSlot = TEAM_TO_SLOT.get(homeCode);
+    const awaySlot = TEAM_TO_SLOT.get(awayCode);
+    const sm = staticMatches.find(m =>
+      (m.homeTeamCode === homeCode && m.awayTeamCode === awayCode) ||
+      (homeSlot && awaySlot && m.homeTeamCode === homeSlot && m.awayTeamCode === awaySlot)
+    );
     if (!sm) continue;
 
     const { state, completed, name: typeName, description } = ev.status.type;
