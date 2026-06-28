@@ -1,46 +1,44 @@
-// Equipos proyectados por grupo — solo se usan cuando ESPN aún no confirmó el grupo.
-// El resultado real de resolveBracketCodes siempre tiene prioridad.
+// Resultados reales de la fase de grupos (completada el 28/6/2026).
+// Actúan como fallback cuando el caché de ESPN aún no llegó al cliente.
+// El resultado de resolveBracketCodes (ESPN) siempre tiene prioridad.
 
 export const PREDICTED_TEAMS: Record<string, string> = {
-  // ── Primeros de grupo ───────────────────────────────────────
-  '1A': 'MX',
-  '1C': 'BR',
-  '1D': 'US',
-  '1F': 'NL',
-  '1G': 'BE',
-  '1H': 'ES',
-  '1I': 'FR',
-  '1J': 'AR',
-  '1K': 'CO',       // Colombia gana Grupo K
-  '1L': 'GB-ENG',
+  // ── Primeros de grupo — resultados reales ────────────────────
+  '1A': 'MX',         // México  9pts
+  '1B': 'CH',         // Suiza   7pts
+  '1C': 'BR',         // Brasil  7pts
+  '1D': 'US',         // USA     6pts
+  '1E': 'DE',         // Alemania 6pts
+  '1F': 'NL',         // Holanda  7pts
+  '1G': 'BE',         // Bélgica  5pts
+  '1H': 'ES',         // España   7pts
+  '1I': 'FR',         // Francia  9pts
+  '1J': 'AR',         // Argentina 9pts
+  '1K': 'CO',         // Colombia 7pts
+  '1L': 'GB-ENG',     // Inglaterra 7pts
 
-  // ── Segundos de grupo ───────────────────────────────────────
-  '2A': 'ZA',
-  '2C': 'MA',
-  '2D': 'AU',       // Australia 2do Grupo D (no Turquía)
-  '2F': 'JP',       // Japón 2do Grupo F (no Suecia)
-  '2G': 'EG',
-  '2H': 'CV',       // Cabo Verde 2do Grupo H
-  '2I': 'NO',
-  '2J': 'AT',
-  '2K': 'PT',       // Portugal 2do Grupo K (no Colombia)
-  '2L': 'HR',
+  // ── Segundos de grupo — resultados reales ───────────────────
+  '2A': 'ZA',         // Sudáfrica 4pts
+  '2B': 'CA',         // Canadá    4pts
+  '2C': 'MA',         // Marruecos 7pts
+  '2D': 'AU',         // Australia 4pts
+  '2E': 'CI',         // Costa de Marfil 6pts
+  '2F': 'JP',         // Japón     5pts
+  '2G': 'EG',         // Egipto    5pts
+  '2H': 'CV',         // Cabo Verde 3pts
+  '2I': 'NO',         // Noruega   6pts
+  '2J': 'AT',         // Austria   4pts
+  '2K': 'PT',         // Portugal  5pts
+  '2L': 'HR',         // Croacia   6pts
 
-  // ── Mejores terceros (predicción por slot) ──────────────────
-  // id 75 → 1E(DE) vs 3ABCDF → DE vs PY  (PY 3ro Grupo D)
-  '3ABCDF': 'PY',
-  // id 78 → 1I(FR) vs 3CDFGH → FR vs SE  (SE 3ro Grupo F)
-  '3CDFGH': 'SE',
-  // id 79 → 1A(MX) vs 3CEFHI → MX vs EC  (EC 3ro Grupo E)
-  '3CEFHI': 'EC',
-  // id 80 → 1L(ENG) vs 3EHIJK → ENG vs CD  (CD 3ro Grupo K)
-  '3EHIJK': 'CD',
-  // id 81 → 1G(BE) vs 3AEHIJ → BE vs SN  (SN 3ro Grupo I)
-  '3AEHIJ': 'SN',
-  // id 82 → 1D(US) vs 3BEFIJ → US vs BA  (BA 3ro Grupo B)
-  '3BEFIJ': 'BA',
-  // id 85 → 1B(CH) vs 3EFGIJ → CH vs DZ  (DZ 3ro Grupo J)
-  '3EFGIJ': 'DZ',
-  // id 88 → 1K(CO) vs 3DEIJL → CO vs GH  (GH 3ro Grupo L)
-  '3DEIJL': 'GH',
+  // ── Mejores terceros — 8 clasificados reales ─────────────────
+  // Ranking: CD(+1) > SE(0,gf7) > EC(0,gf2) > GH(0,gf2) > BA(-1) > DZ(-2,gf5) > PY(-2,gf2) > SN(3pts)
+  '3ABCDF': 'BA',     // Bosnia (3°B, 4pts)
+  '3CDFGH': 'PY',     // Paraguay (3°D, 4pts)
+  '3CEFHI': 'EC',     // Ecuador (3°E, 4pts)
+  '3EHIJK': 'CD',     // Congo DR (3°K, 4pts, +1)
+  '3AEHIJ': 'SN',     // Senegal (3°I, 3pts, +2)
+  '3BEFIJ': 'SE',     // Suecia (3°F, 4pts, dg0, gf7)
+  '3EFGIJ': 'DZ',     // Argelia (3°J, 4pts)
+  '3DEIJL': 'GH',     // Ghana (3°L, 4pts)
 };

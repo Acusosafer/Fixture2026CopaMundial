@@ -138,20 +138,27 @@ async function espnFetch<T>(url: string): Promise<T> {
 
 // ── Date helpers ─────────────────────────────────────────────
 
-const TOURNAMENT_START = new Date('2026-06-11T00:00:00Z');
-
-function getDatesSinceStart(): string[] {
-  const dates: string[] = [];
-  const d = new Date(TOURNAMENT_START);
+// Dates that have knockout stage matches (R32 onwards) — static list avoids
+// fetching 18+ historical group-stage dates after groups are complete.
+function getRelevantDates(): string[] {
+  const matchDates = new Set<string>();
   const now = new Date();
-  while (d <= now) {
-    const y = d.getUTCFullYear();
-    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(d.getUTCDate()).padStart(2, '0');
-    dates.push(`${y}${m}${day}`);
-    d.setUTCDate(d.getUTCDate() + 1);
+
+  for (const m of staticMatches) {
+    // Only knockout matches (group stage is complete and handled by PREDICTED_TEAMS fallback)
+    if (!['R32', 'R16', 'QF', 'SF', 'TPO', 'F'].includes(m.group ?? '')) continue;
+    const d = new Date(m.date);
+    // Include matches within ±2 days of now (live/recent/upcoming)
+    const diffDays = (d.getTime() - now.getTime()) / 86400000;
+    if (diffDays >= -2 && diffDays <= 3) {
+      const y = d.getUTCFullYear();
+      const mo = String(d.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(d.getUTCDate()).padStart(2, '0');
+      matchDates.add(`${y}${mo}${day}`);
+    }
   }
-  return dates;
+
+  return [...matchDates];
 }
 
 function parseESPNEvents(events: ESPNEvent[]): LiveScore[] {
@@ -229,7 +236,7 @@ const STATUS_PRIORITY: Record<LiveScore['status'], number> = {
 };
 
 export async function getESPNLive(): Promise<LiveScore[]> {
-  const dates = getDatesSinceStart();
+  const dates = getRelevantDates();
 
   for (const slug of WC_SLUGS) {
     try {
