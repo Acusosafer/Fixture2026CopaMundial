@@ -284,13 +284,13 @@ function ElCaminoSection({
         const homeCode = resolveCode(rivalMatch.homeTeamCode);
         const awayCode = resolveCode(rivalMatch.awayTeamCode);
         opponents = [
-          { team: getTeamByCode(homeCode), code: homeCode, isPredicted: !confirmed.has(rivalMatch.homeTeamCode) },
-          { team: getTeamByCode(awayCode), code: awayCode, isPredicted: !confirmed.has(rivalMatch.awayTeamCode) },
+          { team: getTeamByCode(homeCode) ?? null, code: homeCode, isPredicted: !confirmed.has(rivalMatch.homeTeamCode) },
+          { team: getTeamByCode(awayCode) ?? null, code: awayCode, isPredicted: !confirmed.has(rivalMatch.awayTeamCode) },
         ];
       } else {
         // Could be a final/SF where rival is W-code
         const rivalCode = resolveCode(rivalWCode);
-        opponents = [{ team: getTeamByCode(rivalCode), code: rivalCode, isPredicted: true }];
+        opponents = [{ team: getTeamByCode(rivalCode) ?? null, code: rivalCode, isPredicted: true }];
       }
 
       path.push({
