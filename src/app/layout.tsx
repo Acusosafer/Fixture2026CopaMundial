@@ -5,8 +5,6 @@ import { TopBar } from '@/components/shell/TopBar';
 import { BottomNav } from '@/components/shell/BottomNav';
 import { ThemeSync } from '@/components/shell/ThemeSync';
 import { SplashScreen } from '@/components/shell/SplashScreen';
-import { ServiceWorkerRegistrar } from '@/components/shell/ServiceWorkerRegistrar';
-import { NotificationPrompt } from '@/components/shell/NotificationPrompt';
 import { MatchDayBanner } from '@/components/shell/MatchDayBanner';
 import './globals.css';
 
@@ -87,7 +85,6 @@ export default function RootLayout({
         style={{ background: 'var(--bg)', color: 'var(--text)' }}
       >
         <Providers>
-          <ServiceWorkerRegistrar />
           <ThemeSync />
           <SplashScreen />
           <TopBar />
@@ -101,7 +98,6 @@ export default function RootLayout({
             </footer>
           </main>
           <MatchDayBanner />
-          <NotificationPrompt />
           <BottomNav />
         </Providers>
       </body>

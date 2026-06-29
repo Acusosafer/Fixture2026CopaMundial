@@ -345,12 +345,14 @@ function BracketBranding() {
       className="flex items-center justify-center mb-3 flex-shrink-0"
       style={{ width: totalW }}
     >
-      <span
-        className="text-[9px] font-bold tracking-[0.25em] uppercase"
-        style={{ color: 'var(--text-dim)', opacity: 0.5 }}
-      >
-        FAS Analytics
-      </span>
+      <Image
+        src="/logo-fas-mundial.jpeg"
+        alt="FAS Analytics"
+        width={72}
+        height={28}
+        className="object-contain opacity-60"
+        unoptimized
+      />
     </div>
   );
 }
