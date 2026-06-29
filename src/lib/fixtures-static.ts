@@ -171,14 +171,14 @@ export const staticMatches: StaticMatch[] = [
   { id: 88, homeTeamCode: '1K',    awayTeamCode: '3DEIJL', date: '2026-07-04T01:30:00Z', venue: 'Estadio Kansas City', stadiumId: 'arrowhead', group: 'R32', status: 'scheduled', homeScore: null, awayScore: null },
 
   // ── Octavos de final (Round of 16) ───────────────────────
-  { id: 89, homeTeamCode: 'W75', awayTeamCode: 'W78', date: '2026-07-04T17:00:00Z', venue: 'Estadio Houston', stadiumId: 'nrg', group: 'R16', status: 'scheduled', homeScore: null, awayScore: null },
+  { id: 89, homeTeamCode: 'W73', awayTeamCode: 'W75', date: '2026-07-04T17:00:00Z', venue: 'Estadio Houston', stadiumId: 'nrg', group: 'R16', status: 'scheduled', homeScore: null, awayScore: null },
   { id: 90, homeTeamCode: 'W74', awayTeamCode: 'W77', date: '2026-07-04T21:00:00Z', venue: 'Estadio Filadelfia', stadiumId: 'lincoln-financial', group: 'R16', status: 'scheduled', homeScore: null, awayScore: null },
-  { id: 91, homeTeamCode: 'W73', awayTeamCode: 'W76', date: '2026-07-05T20:00:00Z', venue: 'Estadio Nueva York/Nueva Jersey', stadiumId: 'metlife', group: 'R16', status: 'scheduled', homeScore: null, awayScore: null },
+  { id: 91, homeTeamCode: 'W76', awayTeamCode: 'W78', date: '2026-07-05T20:00:00Z', venue: 'Estadio Nueva York/Nueva Jersey', stadiumId: 'metlife', group: 'R16', status: 'scheduled', homeScore: null, awayScore: null },
   { id: 92, homeTeamCode: 'W79', awayTeamCode: 'W80', date: '2026-07-06T00:00:00Z', venue: 'Estadio Ciudad de México', stadiumId: 'azteca', group: 'R16', status: 'scheduled', homeScore: null, awayScore: null },
   { id: 93, homeTeamCode: 'W84', awayTeamCode: 'W83', date: '2026-07-06T19:00:00Z', venue: 'Estadio Dallas', stadiumId: 'att', group: 'R16', status: 'scheduled', homeScore: null, awayScore: null },
   { id: 94, homeTeamCode: 'W82', awayTeamCode: 'W81', date: '2026-07-07T00:00:00Z', venue: 'Estadio de Seattle', stadiumId: 'lumen', group: 'R16', status: 'scheduled', homeScore: null, awayScore: null },
-  { id: 95, homeTeamCode: 'W87', awayTeamCode: 'W86', date: '2026-07-07T16:00:00Z', venue: 'Estadio Atlanta', stadiumId: 'mercedes-benz', group: 'R16', status: 'scheduled', homeScore: null, awayScore: null },
-  { id: 96, homeTeamCode: 'W85', awayTeamCode: 'W88', date: '2026-07-07T20:00:00Z', venue: 'Estadio BC Place Vancouver', stadiumId: 'bc-place', group: 'R16', status: 'scheduled', homeScore: null, awayScore: null },
+  { id: 95, homeTeamCode: 'W86', awayTeamCode: 'W88', date: '2026-07-07T16:00:00Z', venue: 'Estadio Atlanta', stadiumId: 'mercedes-benz', group: 'R16', status: 'scheduled', homeScore: null, awayScore: null },
+  { id: 96, homeTeamCode: 'W85', awayTeamCode: 'W87', date: '2026-07-07T20:00:00Z', venue: 'Estadio BC Place Vancouver', stadiumId: 'bc-place', group: 'R16', status: 'scheduled', homeScore: null, awayScore: null },
 
   // ── Cuartos de final (Quarterfinals) ─────────────────────
   { id: 97,  homeTeamCode: 'W89', awayTeamCode: 'W91', date: '2026-07-09T20:00:00Z', venue: 'Estadio Boston',    stadiumId: 'gillette',   group: 'QF', status: 'scheduled', homeScore: null, awayScore: null },

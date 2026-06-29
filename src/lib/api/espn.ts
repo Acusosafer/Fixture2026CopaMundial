@@ -16,7 +16,7 @@ interface ESPNTeam { id: string; abbreviation: string; displayName: string; }
 interface ESPNCompetitor { homeAway: 'home' | 'away'; team: ESPNTeam; score: string; }
 interface ESPNStatusType { state: string; completed: boolean; name?: string; description?: string; }
 interface ESPNStatus { type: ESPNStatusType; displayClock: string; clock: number; period: number; }
-interface ESPNEvent { id: string; status: ESPNStatus; competitions: Array<{ competitors: ESPNCompetitor[] }>; }
+interface ESPNEvent { id: string; date?: string; status: ESPNStatus; competitions: Array<{ competitors: ESPNCompetitor[] }>; }
 
 interface ESPNKeyEvent {
   id: string;
@@ -152,7 +152,7 @@ function getRelevantDates(): string[] {
 
   for (const m of staticMatches) {
     // Only knockout matches (group stage is complete and handled by PREDICTED_TEAMS fallback)
-    if (!['R32', 'R16', 'QF', 'SF', 'TPO', 'F'].includes(m.group ?? '')) continue;
+    if (!['R32', 'R16', 'QF', 'SF', 'TPO', 'FIN'].includes(m.group ?? '')) continue;
     const d = new Date(m.date);
     // Include matches within ±2 days of now (live/recent/upcoming)
     const diffDays = (d.getTime() - now.getTime()) / 86400000;
@@ -179,10 +179,18 @@ function parseESPNEvents(events: ESPNEvent[]): LiveScore[] {
     const awayCode = TLA_TO_CODE[away.team.abbreviation] ?? away.team.abbreviation;
     const homeSlot = TEAM_TO_SLOT.get(homeCode);
     const awaySlot = TEAM_TO_SLOT.get(awayCode);
-    const sm = staticMatches.find(m =>
+    let sm = staticMatches.find(m =>
       (m.homeTeamCode === homeCode && m.awayTeamCode === awayCode) ||
       (homeSlot && awaySlot && m.homeTeamCode === homeSlot && m.awayTeamCode === awaySlot)
     );
+    // Fallback para R16+: los equipos son dinámicos (W73, W75...) — matchear por fecha/hora
+    if (!sm && ev.date) {
+      const evMs = new Date(ev.date).getTime();
+      sm = staticMatches.find(m => {
+        if (!['R16', 'QF', 'SF', 'TPO', 'FIN'].includes(m.group)) return false;
+        return Math.abs(new Date(m.date).getTime() - evMs) < 3600000; // ±1 hora
+      });
+    }
     if (!sm) continue;
 
     const { state, completed, name: typeName, description } = ev.status.type;
