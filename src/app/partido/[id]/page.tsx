@@ -1,12 +1,9 @@
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, Calendar, Users } from 'lucide-react';
 import { staticMatches } from '@/lib/fixtures-static';
-import { getTeamByCode } from '@/lib/teams';
-import { MatchDetailClient } from '@/components/match/MatchDetailClient';
 import { LiveStatusBadge } from '@/components/match/LiveStatusBadge';
-import { MatchDetailSection } from '@/components/match/MatchDetailSection';
+import { PartidoTeams } from '@/components/match/PartidoTeams';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -19,19 +16,6 @@ export default async function PartidoPage({ params }: PageProps) {
   if (!match) {
     notFound();
   }
-
-  const TBD = {
-    code: 'TBD',
-    name: 'TBD',
-    nameEs: 'Por determinar',
-    primaryColor: '#4A5273',
-    secondaryColor: '#8892B0',
-    flagUrl: 'https://flagcdn.com/w320/un.png',
-    group: '',
-  };
-
-  const homeTeam = getTeamByCode(match.homeTeamCode) ?? TBD;
-  const awayTeam = getTeamByCode(match.awayTeamCode) ?? TBD;
 
   const matchDate = new Date(match.date);
 
@@ -61,52 +45,7 @@ export default async function PartidoPage({ params }: PageProps) {
           border: '1px solid var(--border-color)',
         }}
       >
-        {/* Teams row */}
-        <div className="flex items-center justify-between gap-3">
-          {/* Home team */}
-          <div className="flex flex-col items-center gap-2 flex-1">
-            <div className="relative w-16 h-16 rounded-full overflow-hidden" style={{ border: '2px solid var(--border-color)' }}>
-              <Image src={homeTeam.flagUrl} alt={homeTeam.nameEs} fill unoptimized className="object-cover" />
-            </div>
-            <span className="text-sm font-semibold text-center leading-tight" style={{ color: 'var(--text)' }}>
-              {homeTeam.nameEs}
-            </span>
-            <span className="text-[10px] uppercase tracking-wider" style={{ color: 'var(--text-mute)' }}>
-              Local
-            </span>
-          </div>
-
-          {/* VS / Score */}
-          <div className="flex flex-col items-center">
-            {match.status === 'finished' ? (
-              <div className="flex items-center gap-2 font-heading" style={{ fontSize: '2.5rem', color: 'var(--finished)' }}>
-                <span>{match.homeScore}</span>
-                <span style={{ color: 'var(--text-mute)', fontSize: '0.8em' }}>–</span>
-                <span>{match.awayScore}</span>
-              </div>
-            ) : (
-              <span className="font-heading text-3xl" style={{ color: 'var(--text-mute)' }}>VS</span>
-            )}
-          </div>
-
-          {/* Away team */}
-          <div className="flex flex-col items-center gap-2 flex-1">
-            <div className="relative w-16 h-16 rounded-full overflow-hidden" style={{ border: '2px solid var(--border-color)' }}>
-              <Image src={awayTeam.flagUrl} alt={awayTeam.nameEs} fill unoptimized className="object-cover" />
-            </div>
-            <span className="text-sm font-semibold text-center leading-tight" style={{ color: 'var(--text)' }}>
-              {awayTeam.nameEs}
-            </span>
-            <span className="text-[10px] uppercase tracking-wider" style={{ color: 'var(--text-mute)' }}>
-              Visitante
-            </span>
-          </div>
-        </div>
-
-        {/* Countdown / Score detail */}
-        <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 12 }}>
-          <MatchDetailClient match={match} homeTeam={homeTeam} awayTeam={awayTeam} />
-        </div>
+        <PartidoTeams match={match} />
       </div>
 
       {/* Match info */}
@@ -157,13 +96,6 @@ export default async function PartidoPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Events + Lineups */}
-      <MatchDetailSection
-        matchId={match.id}
-        staticStatus={match.status}
-        homeTeamName={homeTeam.nameEs}
-        awayTeamName={awayTeam.nameEs}
-      />
     </div>
   );
 }

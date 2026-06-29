@@ -202,22 +202,5 @@ export function resolveBracketCodes(
     }
   }
 
-  // Resolver ganadores de knockout (R32 → R16 → QF → SF) en orden para que
-  // los W-codes se resuelvan de ronda en ronda (W73 debe estar antes que W89)
-  for (const round of ['R32', 'R16', 'QF', 'SF']) {
-    for (const m of allMatches.filter(x => x.group === round)) {
-      const live = liveScores.get(m.id);
-      if (!live || live.status !== 'FINISHED') continue;
-      const homeResolved = resolved.get(m.homeTeamCode) ?? m.homeTeamCode;
-      const awayResolved = resolved.get(m.awayTeamCode) ?? m.awayTeamCode;
-      if (live.homeScore > live.awayScore) {
-        resolved.set(`W${m.id}`, homeResolved);
-      } else if (live.awayScore > live.homeScore) {
-        resolved.set(`W${m.id}`, awayResolved);
-      }
-      // Empate → requiere info de penales, no resolver por score
-    }
-  }
-
   return resolved;
 }

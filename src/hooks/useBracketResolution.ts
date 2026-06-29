@@ -17,11 +17,23 @@ export function useBracketResolution(): BracketResolution {
   return useMemo(() => {
     const confirmed = resolveBracketCodes(staticMatches, scores);
 
-    // Groups are complete — treat all PREDICTED_TEAMS as confirmed so
-    // the bracket shows real teams in bold (no italic/? styling).
+    // 1. Fill group stage slots (fase de grupos terminada → todos son confirmed)
     for (const [slot, team] of Object.entries(PREDICTED_TEAMS)) {
-      if (!confirmed.has(slot)) {
-        confirmed.set(slot, team);
+      if (!confirmed.has(slot)) confirmed.set(slot, team);
+    }
+
+    // 2. Resolver W-codes DESPUÉS de tener los slots → W73 resuelve a 'CA' (no '2B')
+    for (const round of ['R32', 'R16', 'QF', 'SF']) {
+      for (const m of staticMatches.filter(x => x.group === round)) {
+        const live = scores.get(m.id);
+        if (!live || live.status !== 'FINISHED') continue;
+        const homeResolved = confirmed.get(m.homeTeamCode) ?? m.homeTeamCode;
+        const awayResolved = confirmed.get(m.awayTeamCode) ?? m.awayTeamCode;
+        if (live.homeScore > live.awayScore) {
+          confirmed.set(`W${m.id}`, homeResolved);
+        } else if (live.awayScore > live.homeScore) {
+          confirmed.set(`W${m.id}`, awayResolved);
+        }
       }
     }
 
