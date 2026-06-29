@@ -219,8 +219,8 @@ const LEFT_ROUNDS: { r: number; ids: number[] }[] = [
 const RIGHT_ROUNDS: { r: number; ids: number[] }[] = [
   { r: 3, ids: [102] },
   { r: 2, ids: [99, 100] },
-  { r: 1, ids: [90, 92, 96, 95] },
-  { r: 0, ids: [74, 77, 79, 80, 87, 85, 88, 86] },
+  { r: 1, ids: [90, 92, 95, 96] },
+  { r: 0, ids: [74, 77, 79, 80, 87, 86, 85, 88] },
 ];
 
 function Half({
