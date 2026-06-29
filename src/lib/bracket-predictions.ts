@@ -31,14 +31,13 @@ export const PREDICTED_TEAMS: Record<string, string> = {
   '2K': 'PT',         // Portugal  5pts
   '2L': 'HR',         // Croacia   6pts
 
-  // ── Mejores terceros — 8 clasificados reales ─────────────────
-  // Ranking: CD(+1) > SE(0,gf7) > EC(0,gf2) > GH(0,gf2) > BA(-1) > DZ(-2,gf5) > PY(-2,gf2) > SN(3pts)
-  '3ABCDF': 'BA',     // Bosnia (3°B, 4pts)
-  '3CDFGH': 'PY',     // Paraguay (3°D, 4pts)
-  '3CEFHI': 'EC',     // Ecuador (3°E, 4pts)
-  '3EHIJK': 'CD',     // Congo DR (3°K, 4pts, +1)
-  '3AEHIJ': 'SN',     // Senegal (3°I, 3pts, +2)
-  '3BEFIJ': 'SE',     // Suecia (3°F, 4pts, dg0, gf7)
-  '3EFGIJ': 'DZ',     // Argelia (3°J, 4pts)
-  '3DEIJL': 'GH',     // Ghana (3°L, 4pts)
+  // ── Mejores terceros — slots oficiales FIFA 2026 ─────────────
+  '3ABCDF': 'PY',     // Paraguay (3°D) → juega vs 1E (Alemania)
+  '3CDFGH': 'SE',     // Suecia   (3°F) → juega vs 1I (Francia)
+  '3CEFHI': 'EC',     // Ecuador  (3°E) → juega vs 1A (México)
+  '3EHIJK': 'CD',     // Congo DR (3°K) → juega vs 1L (Inglaterra)
+  '3AEHIJ': 'SN',     // Senegal  (3°I) → juega vs 1G (Bélgica)
+  '3BEFIJ': 'BA',     // Bosnia   (3°B) → juega vs 1D (Estados Unidos)
+  '3EFGIJ': 'DZ',     // Argelia  (3°J) → juega vs 1B (Suiza)
+  '3DEIJL': 'GH',     // Ghana    (3°L) → juega vs 1K (Colombia)
 };
