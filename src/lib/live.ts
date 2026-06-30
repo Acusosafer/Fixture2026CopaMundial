@@ -6,9 +6,26 @@ export interface LiveScore {
   fdMatchId?: number;
   homeScore: number;
   awayScore: number;
+  // Resultado de la tanda de penales (solo eliminación directa con empate).
+  // Cuando un partido se define por penales, homeScore/awayScore quedan iguales
+  // y el ganador se determina por estos campos.
+  homeShootout?: number;
+  awayShootout?: number;
   minute: number;
   injuryTime: number;
   status: 'IN_PLAY' | 'PAUSED' | 'EXTRA_TIME' | 'PAUSED_ET' | 'PENALTIES' | 'FINISHED' | 'SUSPENDED';
+}
+
+// Devuelve 'home' | 'away' | null según quién ganó el partido,
+// contemplando definición por penales. Null si está empatado/sin definir.
+export function winnerSide(s: Pick<LiveScore, 'homeScore' | 'awayScore' | 'homeShootout' | 'awayShootout'>): 'home' | 'away' | null {
+  if (s.homeScore > s.awayScore) return 'home';
+  if (s.awayScore > s.homeScore) return 'away';
+  if (s.homeShootout != null && s.awayShootout != null) {
+    if (s.homeShootout > s.awayShootout) return 'home';
+    if (s.awayShootout > s.homeShootout) return 'away';
+  }
+  return null;
 }
 
 // Helper: el partido está activo (no terminado ni suspendido)

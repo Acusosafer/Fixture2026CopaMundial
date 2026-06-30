@@ -244,11 +244,13 @@ interface PathStep {
 
 function ElCaminoSection({
   nextMatchId,
+  myTeamCode,
   reduceMotion,
   confirmed,
   predicted,
 }: {
   nextMatchId: number;
+  myTeamCode: string;
   reduceMotion: boolean;
   confirmed: Map<string, string>;
   predicted: Map<string, string>;
@@ -258,6 +260,25 @@ function ElCaminoSection({
 
   const steps = useMemo<PathStep[]>(() => {
     const path: PathStep[] = [];
+
+    // Paso 0: el partido propio del equipo (ej. Argentina vs Cabo Verde)
+    const ownMatch = staticMatches.find((m) => m.id === nextMatchId);
+    if (ownMatch) {
+      const rivalRaw =
+        resolveCode(ownMatch.homeTeamCode) === myTeamCode
+          ? ownMatch.awayTeamCode
+          : ownMatch.homeTeamCode;
+      const rivalCode = resolveCode(rivalRaw);
+      path.push({
+        roundLabel: ROUND_LABELS[ownMatch.group] ?? ownMatch.group,
+        date: ownMatch.date,
+        opponents: [
+          { team: getTeamByCode(rivalCode) ?? null, code: rivalCode, isPredicted: !confirmed.has(rivalRaw) },
+        ],
+        matchId: ownMatch.id,
+      });
+    }
+
     let matchId = nextMatchId;
 
     for (let step = 0; step < 4; step++) {
@@ -266,6 +287,8 @@ function ElCaminoSection({
         (m) => m.homeTeamCode === `W${matchId}` || m.awayTeamCode === `W${matchId}`
       );
       if (!nextRound) break;
+      // El final lo representa el trofeo al final — no lo agregamos como paso
+      if (nextRound.group === 'FIN') break;
 
       // The rival is the other team in this next-round match
       const wCode = `W${matchId}`;
@@ -304,7 +327,7 @@ function ElCaminoSection({
     }
     return path;
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nextMatchId, confirmed, predicted]);
+  }, [nextMatchId, myTeamCode, confirmed, predicted]);
 
   if (steps.length === 0) return null;
 
@@ -579,6 +602,7 @@ export default function HomePage() {
       {nextMatch && nextMatch.group !== 'A' && (
         <ElCaminoSection
           nextMatchId={nextMatch.id}
+          myTeamCode={myTeam.code}
           reduceMotion={!!shouldReduceMotion}
           confirmed={confirmed}
           predicted={predicted}

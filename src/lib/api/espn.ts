@@ -13,7 +13,7 @@ const WC_SLUGS = ['fifa.world', 'world.cup'];
 // ── Raw ESPN types ────────────────────────────────────────────
 
 interface ESPNTeam { id: string; abbreviation: string; displayName: string; }
-interface ESPNCompetitor { homeAway: 'home' | 'away'; team: ESPNTeam; score: string; }
+interface ESPNCompetitor { homeAway: 'home' | 'away'; team: ESPNTeam; score: string; shootoutScore?: number; winner?: boolean; }
 interface ESPNStatusType { state: string; completed: boolean; name?: string; description?: string; }
 interface ESPNStatus { type: ESPNStatusType; displayClock: string; clock: number; period: number; }
 interface ESPNEvent { id: string; date?: string; status: ESPNStatus; competitions: Array<{ competitors: ESPNCompetitor[] }>; }
@@ -207,6 +207,10 @@ function parseESPNEvents(events: ESPNEvent[]): LiveScore[] {
       staticMatchId: sm.id,
       homeScore: parseInt(home.score, 10) || 0,
       awayScore: parseInt(away.score, 10) || 0,
+      // Penales: ESPN reporta el resultado de la tanda en shootoutScore
+      ...(typeof home.shootoutScore === 'number' && typeof away.shootoutScore === 'number'
+        ? { homeShootout: home.shootoutScore, awayShootout: away.shootoutScore }
+        : {}),
       minute,
       injuryTime,
       status: mapESPNStatus(state, completed, typeName, description, ev.status.period),
