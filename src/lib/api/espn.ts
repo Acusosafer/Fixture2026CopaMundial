@@ -144,19 +144,20 @@ async function espnFetch<T>(url: string): Promise<T> {
 
 // ── Date helpers ─────────────────────────────────────────────
 
-// Dates that have knockout stage matches (R32 onwards) — static list avoids
-// fetching 18+ historical group-stage dates after groups are complete.
+// Dates that have knockout stage matches (R32 onwards).
+// Para el bracket necesitamos TODOS los resultados históricos (no solo ±2 días)
+// porque los ganadores de cruces anteriores alimentan las llaves siguientes.
 function getRelevantDates(): string[] {
   const matchDates = new Set<string>();
   const now = new Date();
 
   for (const m of staticMatches) {
-    // Only knockout matches (group stage is complete and handled by PREDICTED_TEAMS fallback)
     if (!['R32', 'R16', 'QF', 'SF', 'TPO', 'FIN'].includes(m.group ?? '')) continue;
     const d = new Date(m.date);
-    // Include matches within ±2 days of now (live/recent/upcoming)
     const diffDays = (d.getTime() - now.getTime()) / 86400000;
-    if (diffDays >= -2 && diffDays <= 3) {
+    // Pasado: incluir siempre (necesitamos todos los resultados para resolver el bracket)
+    // Futuro: hasta 3 días adelante (partidos próximos / en vivo)
+    if (diffDays <= 3) {
       const y = d.getUTCFullYear();
       const mo = String(d.getUTCMonth() + 1).padStart(2, '0');
       const day = String(d.getUTCDate()).padStart(2, '0');
